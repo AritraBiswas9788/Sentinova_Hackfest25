@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:sentinova/helper/data.dart';
 import '../helper/common.dart';
 import '../models/post_model.dart';
 import '../screens/post_page.dart';
@@ -10,8 +10,9 @@ import '../widgets/user_details.dart';
 
 class PostCard extends StatelessWidget {
   final PostModel postData;
+  String? currentUserId = currUser?.id;
 
-  const PostCard({super.key, required this.postData});
+  PostCard({super.key, required this.postData});
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +20,9 @@ class PostCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) {
-              return PostPage(postData: postData);
-            }));
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+          return PostPage(postData: postData);
+        }));
       },
       child: AspectRatio(
         aspectRatio: aspectRatio,
@@ -33,7 +33,9 @@ class PostCard extends StatelessWidget {
             padding: const EdgeInsets.all(4.0),
             child: InheritedPostModel(
               postData: postData,
-              child: const Column(
+              child: postData.isPoll
+                  ? PollPostWidget(post: postData)
+                  : const Column(
                 children: <Widget>[
                   _Post(),
                   Divider(color: Colors.grey),
@@ -118,6 +120,80 @@ class _PostDetails extends StatelessWidget {
       children: <Widget>[
         Expanded(flex: 3, child: UserDetails(userData: postData.author)),
         const Expanded(flex: 1, child: PostStats()),
+      ],
+    );
+  }
+}
+
+class PollPostWidget extends StatefulWidget {
+  final PostModel post;
+  String? currentUserId = currUser?.id;
+
+  PollPostWidget({super.key, required this.post});
+
+  @override
+  State<PollPostWidget> createState() => _PollPostWidgetState();
+}
+
+class _PollPostWidgetState extends State<PollPostWidget> {
+  int? selectedOptionIndex;
+
+  void submitVote() {
+    if (selectedOptionIndex != null) {
+      setState(() {
+        widget.post.options[selectedOptionIndex!].votes++;
+        String? uid = widget.currentUserId;
+        if(uid!=null) widget.post.votedUids.add(uid);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    bool hasVoted = widget.post.votedUids.contains(widget.currentUserId);
+    final totalVotes = widget.post.options.fold<int>(0, (sum, option) => sum + option.votes);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          title: Text(widget.post.title, style: Theme.of(context).textTheme.titleLarge),
+          subtitle: Text(widget.post.summary),
+        ),
+        ...widget.post.options.asMap().entries.map((entry) {
+          int index = entry.key;
+          PollOption option = entry.value;
+
+          if (hasVoted) {
+            double percentage = totalVotes == 0 ? 0 : (option.votes / totalVotes) * 100;
+            return ListTile(
+              title: Text(option.text),
+              subtitle: LinearProgressIndicator(value: percentage / 100),
+              trailing: Text('${option.votes} votes'),
+            );
+          } else {
+            return RadioListTile<int>(
+              title: Text(option.text),
+              value: index,
+              groupValue: selectedOptionIndex,
+              onChanged: (int? value) {
+                setState(() {
+                  selectedOptionIndex = value;
+                });
+              },
+            );
+          }
+        }),
+        if (!hasVoted)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: submitVote,
+              child: const Text("Submit Vote"),
+            ),
+          ),
+        const Divider(color: Colors.grey),
+        const _PostDetails(),
       ],
     );
   }

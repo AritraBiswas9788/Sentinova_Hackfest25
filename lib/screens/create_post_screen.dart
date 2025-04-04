@@ -26,6 +26,12 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   final ImagePicker _picker = ImagePicker();
 
+  bool _isPoll = false;
+  List<TextEditingController> _pollOptionControllers = [
+    TextEditingController(),
+    TextEditingController(),
+  ];
+
   Future<void> _pickImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
@@ -62,6 +68,18 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
     }
   }
 
+  void _addPollOptionField() {
+    setState(() {
+      _pollOptionControllers.add(TextEditingController());
+    });
+  }
+
+  void _removePollOptionField(int index) {
+    setState(() {
+      _pollOptionControllers.removeAt(index);
+    });
+  }
+
   void _submitPost() {
     if (_formKey.currentState!.validate()) {
       if (_uploadedImageUrl == null) {
@@ -92,7 +110,15 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         views: 0,
         author: dummyAuthor,
         comments: <CommentModel>[],
-      );
+      )
+        ..options.addAll(
+          _isPoll
+              ? _pollOptionControllers
+              .where((c) => c.text.trim().isNotEmpty)
+              .map((c) => PollOption(text: c.text.trim()))
+              .toList()
+              : [],
+        );
 
       _sendPostToMongoDB(newPost);
       Navigator.pop(context);
@@ -100,11 +126,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   Future<void> _sendPostToMongoDB(PostModel post) async {
-    // final success = await MongoService.uploadPostToEvent("67f03774f1e87155ee26e619", post);
-    // if (success) {
-    //   print("Post uploaded!");
-    // }
-
+    // await MongoService.uploadPostToEvent("your-event-id", post);
   }
 
   InputDecoration _inputDecoration(String label, IconData icon) {
@@ -127,6 +149,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
           key: _formKey,
           child: Column(
             children: [
+              SwitchListTile(
+                title: Text("Make this a Poll?"),
+                value: _isPoll,
+                onChanged: (val) => setState(() => _isPoll = val),
+              ),
               TextFormField(
                 controller: _titleController,
                 decoration: _inputDecoration("Title", Icons.title),
@@ -156,6 +183,44 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 label: Text("Pick Image from Gallery"),
                 onPressed: _pickImage,
               ),
+              if (_isPoll) ...[
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Poll Options", style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 8),
+                for (int i = 0; i < _pollOptionControllers.length; i++)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _pollOptionControllers[i],
+                          decoration: InputDecoration(
+                            labelText: 'Option ${i + 1}',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          validator: (val) {
+                            if (_isPoll && (val == null || val.trim().isEmpty)) {
+                              return 'Enter option';
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      if (_pollOptionControllers.length > 2)
+                        IconButton(
+                          icon: Icon(Icons.remove_circle_outline),
+                          onPressed: () => _removePollOptionField(i),
+                        ),
+                    ],
+                  ),
+                TextButton.icon(
+                  onPressed: _addPollOptionField,
+                  icon: Icon(Icons.add),
+                  label: Text("Add Option"),
+                ),
+              ],
               const SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,

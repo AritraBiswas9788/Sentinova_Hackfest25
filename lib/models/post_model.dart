@@ -5,12 +5,13 @@ import '../models/user_model.dart';
 
 class PostModel {
   final String id, title, summary, body, imageURL;
-  final bool isPoll = false;
+  final bool isPoll;
   final DateTime postTime;
   final int reacts, views;
   final UserModel author;
   final List<CommentModel> comments;
-  final List<PollOption> options = [];
+  final List<PollOption> options;
+  List<String> votedUids;
 
   PostModel({
     required this.id,
@@ -23,10 +24,14 @@ class PostModel {
     required this.reacts,
     required this.views,
     required this.comments,
+    this.isPoll = false,
+    this.options = const [],
+    this.votedUids = const [],
   });
 
   String get postTimeFormatted => DateFormat.yMMMMEEEEd().format(postTime);
 }
+
 
 class PollOption {
   final String text;
