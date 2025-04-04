@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sentinova/screens/community_screen.dart';
+import 'package:sentinova/services/mongo_service.dart';
 import 'package:sentinova/themes.dart';
 
-void main() {
-  runApp(EchoSenseApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await MongoService.connect(); // Make sure to connect before using
+  runApp(Sentinova());
 }
 
-class EchoSenseApp extends StatelessWidget {
+class Sentinova extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

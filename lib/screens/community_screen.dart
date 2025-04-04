@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sentinova/screens/create_post_screen.dart';
 import '../helper/demo_values.dart';
 import '../widgets/post_card.dart';
 
@@ -16,6 +17,16 @@ class CommunityScreen extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return PostCard(postData: DemoValues.posts[index]);
         },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CreatePostScreen()),
+          );
+        },
+        icon: Icon(Icons.add),
+        label: Text("Create Post"),
       ),
     );
   }
