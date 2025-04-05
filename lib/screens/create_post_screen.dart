@@ -6,6 +6,7 @@ import 'package:sentinova/helper/data.dart';
 import 'package:sentinova/helper/demo_values.dart';
 import 'dart:convert';
 
+import '../helper/constant.dart';
 import '../models/user_model.dart';
 import '../models/comment_model.dart';
 import '../models/post_model.dart';
@@ -44,14 +45,13 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   Future<void> _uploadToCloudinary(File image) async {
-    const cloudName = 'your-cloud-name';
     const uploadPreset = 'your-upload-preset';
 
     final url =
-    Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
+    Uri.parse('https://api.cloudinary.com/v1_1/$CLOUD_NAME/image/upload');
 
     final request = http.MultipartRequest('POST', url)
-      ..fields['upload_preset'] = uploadPreset
+      ..fields[UPLOAD_PRESET] = uploadPreset
       ..files.add(await http.MultipartFile.fromPath('file', image.path));
 
     final response = await request.send();

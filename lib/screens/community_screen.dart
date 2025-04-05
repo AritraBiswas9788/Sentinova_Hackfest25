@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:sentinova/helper/demo_values.dart';
 import 'package:sentinova/models/post_model.dart';
 import 'package:sentinova/services/apiservice.dart';
 import 'package:sentinova/models/user_model.dart';
 
 import '../services/apiservice.dart';
+import '../widgets/post_card.dart';
 import 'create_post_screen.dart';
 
 class CommunityScreen extends StatefulWidget {
@@ -38,15 +40,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
           }
 
           final posts = snapshot.data!;
+          // final posts = DemoValues.posts;
 
           return ListView.builder(
             itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
-              return ListTile(
-                title: Text(post.title),
-                subtitle: Text(post.summary ?? ""),
-              );
+            itemBuilder: (BuildContext context, int index) {
+              return PostCard(postData: DemoValues.posts[index]);
             },
           );
         },
