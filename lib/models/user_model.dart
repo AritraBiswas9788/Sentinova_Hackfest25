@@ -43,3 +43,25 @@ class UserModel {
     'posts': posts,
   };
 }
+
+
+class UserList {
+  final List<UserModel> users;
+
+  const UserList({required this.users});
+
+  factory UserList.fromJson(Map<String, dynamic> json) {
+    return UserList(
+      users: (json['users'] as List<dynamic>)
+          .map((userJson) => UserModel.fromJson(userJson))
+          .toList(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'users': users.map((user) => user.toJson()).toList(),
+    };
+  }
+}
+

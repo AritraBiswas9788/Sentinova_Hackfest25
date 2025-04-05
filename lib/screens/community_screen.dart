@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sentinova/helper/demo_values.dart';
 import 'package:sentinova/models/post_model.dart';
+import 'package:sentinova/screens/sign_in.dart';
 import 'package:sentinova/services/apiservice.dart';
 import 'package:sentinova/models/user_model.dart';
 
@@ -52,10 +54,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CreatePostScreen()),
-          );
+          if(FirebaseAuth.instance.currentUser == null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SignIn()),
+            );
+          }
+          else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CreatePostScreen()),
+            );
+          }
         },
         icon: const Icon(Icons.add),
         label: const Text("Create Post"),

@@ -3,11 +3,27 @@ import 'package:http/http.dart' as http;
 import 'package:sentinova/helper/demo_values.dart';
 import 'package:sentinova/models/comment_model.dart';
 import 'package:sentinova/models/post_model.dart';
+import 'package:sentinova/models/user_model.dart';
 import '../helper/data.dart';
 import '../models/event_model.dart';
 
 class ApiService {
   static const String baseUrl = 'https://hackfest-backend-xrix.onrender.com/api';
+
+  static Future<List<UserModel>> fetchUsers() async {
+    // print("started fetching");
+    final url = Uri.parse('$baseUrl/users');
+    final response = await http.get(url);
+    // print("nooo");
+    // print('STATUS: ${response.statusCode}');
+    // print('BODY: ${response.body}');
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      return UserList.fromJson(decoded).users;
+    } else {
+      throw Exception('Failed to load events');
+    }
+  }
 
   static Future<Events> fetchEvents() async {
     print("started fetching");

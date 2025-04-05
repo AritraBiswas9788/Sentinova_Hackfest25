@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sentinova/widgets/user_details.dart';
 import '../models/post_model.dart';
 import '../themes.dart';
 import '../widgets/comment_list.dart';
@@ -52,7 +53,7 @@ class _NonImageContents extends StatelessWidget {
           _Summary(key: PostPageKeys.summary),
           PostTimeStamp(),
           _MainBody(key: PostPageKeys.mainBody),
-          UserDetailsWithFollow(
+          UserDetails(
             userData: postData.author,
           ),
           SizedBox(height: 8.0),

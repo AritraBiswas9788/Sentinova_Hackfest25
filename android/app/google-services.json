@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "482521837491",
+    "project_id": "sentinova-hackfest-25",
+    "storage_bucket": "sentinova-hackfest-25.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482521837491:android:8b372746bdacbf117c65c6",
+        "android_client_info": {
+          "package_name": "com.example.echosense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIntDR0nQJjCn9jvmySd92wG-CSY_mRFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482521837491:android:736ef129a1318c017c65c6",
+        "android_client_info": {
+          "package_name": "com.example.sentinova"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIntDR0nQJjCn9jvmySd92wG-CSY_mRFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

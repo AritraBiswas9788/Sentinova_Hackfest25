@@ -20,6 +20,11 @@ class _CommentsListState extends State<CommentsList> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _comments = List.from(InheritedPostModel.of(context).postData.comments);
   }
 
@@ -78,7 +83,27 @@ class _CommentsListState extends State<CommentsList> {
                     sizeFactor: animation,
                     child: FadeTransition(
                       opacity: animation,
-                      child: _SingleComment(index: index),
+                      child: Card(
+                        margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        elevation: 2,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _comments[index].user.name, // assuming user has name field
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                _comments[index].comment,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -90,6 +115,7 @@ class _CommentsListState extends State<CommentsList> {
     );
   }
 }
+
 
 
 class CommentsListKeyPrefix {

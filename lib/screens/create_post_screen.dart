@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:sentinova/helper/data.dart';
 import 'package:sentinova/helper/demo_values.dart';
+import 'package:sentinova/screens/sign_in.dart';
 import 'package:sentinova/services/apiservice.dart';
 import 'dart:convert';
 
