@@ -33,7 +33,7 @@ class DemoValues {
     ),
   ];
 
-  static final String _body =
+  static const String _body =
   """Aspernatur omnis consequatur dignissimos recusandae non. Praesentium nihil earum. Porro perspiciatis a velit doloremque consequatur impedit. Autem odio sed qui consequatur laboriosam sapiente omnis sit. Tenetur blanditiis iure molestias quidem odit numquam sunt aliquam.
  
 Vitae libero perferendis voluptate et quasi aut impedit fuga. Maiores suscipit fugiat a est molestiae voluptas quasi earum recusandae. Ut omnis excepturi ut dolore ab.
@@ -134,6 +134,48 @@ Repudiandae sint soluta ullam sunt eos id laborum. Veniam molestiae ipsa odit so
       reacts: 213,
       views: 546,
       comments: _comments,
+    ),
+
+
+    PostModel(
+      id: 'poll1',
+      title: 'What’s your favorite programming language?',
+      summary: 'Vote your favorite language among the most popular ones!',
+      body: '',
+      imageURL: 'assets/images/poll_code.png',
+      isPoll: true,
+      postTime: DateTime.now().subtract(const Duration(days: 1)),
+      reacts: 42,
+      views: 300,
+      author: users[2],
+      comments: [],
+      options: [
+        PollOption(text: 'Python', votes: 10),
+        PollOption(text: 'JavaScript', votes: 5),
+        PollOption(text: 'C++', votes: 8),
+        PollOption(text: 'Dart', votes: 12),
+      ],
+      votedUids: ['uid1', 'uid2', 'uid3'],
+    ),
+    PostModel(
+      id: 'poll2',
+      title: 'Preferred Code Editor?',
+      summary: 'Tell us what IDE or editor you swear by!',
+      body: '',
+      imageURL: 'assets/images/editor_poll.png',
+      isPoll: true,
+      postTime: DateTime.now().subtract(const Duration(hours: 3)),
+      reacts: 30,
+      views: 210,
+      author: users[0],
+      comments: [],
+      options: [
+        PollOption(text: 'VS Code', votes: 15),
+        PollOption(text: 'Android Studio', votes: 7),
+        PollOption(text: 'IntelliJ IDEA', votes: 4),
+        PollOption(text: 'Vim', votes: 2),
+      ],
+      votedUids: ['uid5', 'uid9'],
     ),
   ];
 }
