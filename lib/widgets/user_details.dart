@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../helper/common.dart';
+import '../helper/constant.dart';
 import '../models/user_model.dart';
 import '../widgets/inherited_user_model.dart';
 
@@ -37,7 +38,7 @@ class _UserNameAndEmail extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(userData.name, style: nameTheme),
+            Text(userData.name.toString(), style: nameTheme),
             SizedBox(height: 2.0),
             Text(userData.email, style: emailTheme),
           ],
@@ -55,7 +56,7 @@ class _UserImage extends StatelessWidget {
     final UserModel userData = InheritedUserModel.of(context).userData;
     return Expanded(
       flex: 1,
-      child: CircleAvatar(backgroundImage: AssetImage(userData.image)),
+      child: CircleAvatar(backgroundImage: AssetImage(userData.image ?? DEFAULT_IMG)),
     );
   }
 }

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UserModel {
-  final String id;
-  final String name;
+  final String? id;
+  final String? name;
   final String email;
   final String password;
-  final String image;
+  final String? image;
   final DateTime joined;
   final int posts;
 

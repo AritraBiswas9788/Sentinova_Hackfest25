@@ -86,7 +86,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   void _submitPost() {
     if (_formKey.currentState!.validate()) {
-      _uploadedImageUrl ??= "https://static.thenounproject.com/png/1095867-200.png";
+      _uploadedImageUrl ??= DEFAULT_IMG;
 
       var author = currUser ?? UserModel(
         id: "u001",

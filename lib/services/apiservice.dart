@@ -95,7 +95,26 @@ class ApiService {
       final decoded = jsonDecode(response.body);
       print(decoded);
     } else {
-      throw Exception('Failed to add post');
+      throw Exception('Failed to add comment');
+    }
+  }
+
+  static Future<void> addUser(UserModel user) async {
+    final url = Uri.parse('$baseUrl/users');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: user.toJson(),
+    );
+
+    print('STATUS: ${response.statusCode}');
+    print('BODY: ${response.body}');
+    if (response.statusCode == 200) {
+      final decoded = jsonDecode(response.body);
+      print(decoded);
+    } else {
+      throw Exception('Failed to add user');
     }
   }
 

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sentinova/services/apiservice.dart';
 import '../models/comment_model.dart';
+import '../screens/sign_in.dart';
 import '../widgets/inherited_post_model.dart';
 import '../widgets/user_details_with_follow.dart';
 
@@ -29,6 +31,14 @@ class _CommentsListState extends State<CommentsList> {
   }
 
   void _handleSendComment() {
+    if(FirebaseAuth.instance.currentUser == null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const SignIn()),
+      );
+      return;
+    }
+
     final text = _commentController.text.trim();
     if (text.isNotEmpty) {
       final post = InheritedPostModel.of(context).postData;
@@ -93,8 +103,8 @@ class _CommentsListState extends State<CommentsList> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                _comments[index].user.name, // assuming user has name field
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                _comments[index].user.name.toString(), // assuming user has name field
+                                style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 6),
                               Text(

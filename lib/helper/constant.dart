@@ -5,4 +5,5 @@ const MONGO_URL = "mongodb://localhost:27017/test";
 const COLLECTION_NAME = "events";
 const CLOUD_NAME = "depe43tj1";
 const UPLOAD_PRESET = "sentinova-cloud";
+const DEFAULT_IMG = "https://static.thenounproject.com/png/1095867-200.png";
 

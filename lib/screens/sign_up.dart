@@ -1,25 +1,25 @@
-
 import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sentinova/screens/sign_up.dart';
+import 'package:sentinova/helper/data.dart';
+import 'package:sentinova/models/user_model.dart';
+import 'package:sentinova/screens/sign_in.dart';
+import 'package:sentinova/services/apiservice.dart';
 
-import '../helper/data.dart';
-import '../models/user_model.dart';
-import '../services/apiservice.dart';
-
-class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  State<SignIn> createState() => _SignInState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignUpState extends State<SignUp> {
 
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
   bool hidePassword = true;
+  bool hideConfirmPassword = true;
+
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,8 @@ class _SignInState extends State<SignIn> {
       appBar: AppBar(
         title: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(10),
+
           child: Image.asset('assets/ondc_icon.png'),
           // child: const Text(
           //   'ONDC',
@@ -39,7 +40,7 @@ class _SignInState extends State<SignIn> {
           //       color: Colors.blue,
           //       fontWeight: FontWeight.w500,
           //       fontSize: 30),
-          // )
+          // ),
         ),
         centerTitle: true,
         backgroundColor: Colors.grey[850],
@@ -51,7 +52,7 @@ class _SignInState extends State<SignIn> {
             children: <Widget>[
 
               Container(
-                margin: EdgeInsets.only(top: fem*20),//, bottom: fem*10),
+                margin: EdgeInsets.only(top: fem*5),//, bottom: fem*10),
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(10),
                 // child: const Text(
@@ -61,14 +62,15 @@ class _SignInState extends State<SignIn> {
                 //     color: Colors.white,
                 //   ),
                 // )
-                child: Image.asset('assets/sign_in.png'),
+                child: Image.asset('assets/sign_up.png'),
 
               ),
+
               Container(
                 //alignment: Alignment.center,
                 margin: EdgeInsets.only(top: fem*5),//, bottom: fem*20),
                 child: const Text(
-                  ' SIGN IN',
+                  ' SIGN UP',
                   style: TextStyle(
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -78,9 +80,9 @@ class _SignInState extends State<SignIn> {
               ),
               Container(
                 //alignment: Alignment.center,
-                margin: EdgeInsets.only( bottom: fem*20),
+                margin: EdgeInsets.only( bottom: fem*10),
                 child: const Text(
-                  '  Please Sign in to continue',
+                  '  Please Sign up to continue',
                   style: TextStyle(
                     fontSize: 15,
                     fontStyle: FontStyle.italic,
@@ -98,8 +100,8 @@ class _SignInState extends State<SignIn> {
                   controller: nameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'User Name',
-                    icon: Icon(Icons.person),
+                    labelText: 'Email',
+                    icon: Icon(Icons.email),
                     iconColor: Colors.white,
                     labelStyle: TextStyle(color: Colors.white),
                   ),
@@ -126,10 +128,7 @@ class _SignInState extends State<SignIn> {
                         color: Colors.white,
                         onPressed: (){
                           setState(() {
-                            print(hidePassword);
-                            if(hidePassword) hidePassword = false;
-                            else hidePassword = true;
-                            // hidePassword = !hidePassword;
+                            hidePassword = !hidePassword;
                           });
                         },
                       )
@@ -137,24 +136,43 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
               Container(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    forgotPass();
-                  },
-                  child: Text('Forgot Password?  ',
-                    style: TextStyle(color: Colors.grey[200]),),
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0.0),
+                child: TextField(
+                  obscureText: hideConfirmPassword,
+                  controller: confirmPasswordController,
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Confirm Password',
+                      icon: Icon(Icons.password),
+                      iconColor: Colors.white,
+                      labelStyle: TextStyle(color: Colors.white),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                            hideConfirmPassword ? Icons.visibility_off : Icons.visibility
+                        ),
+                        color: Colors.white,
+                        onPressed: (){
+                          setState(() {
+                            hideConfirmPassword = !hideConfirmPassword;
+                          });
+                        },
+                      )
+                  ),
                 ),
               ),
               Container(
                   height: 80,
                   padding: const EdgeInsets.fromLTRB(10, 30.0, 10, 0),
                   child: ElevatedButton(
-                    child: const Text('SIGN IN', style: TextStyle(fontSize: 20.0)),
+                    child: const Text('SIGN UP', style: TextStyle(fontSize: 20.0)),
                     onPressed: () {
-                      String name = nameController.text;
+                      String email = nameController.text;
                       String pass = passwordController.text;
-                      signIn(name, pass);
+                      String confirmPass = confirmPasswordController.text;
+                      signUp(email, pass, confirmPass);
                     },
                   )
               ),
@@ -163,7 +181,7 @@ class _SignInState extends State<SignIn> {
                   Container(
                     // height: 40.0,
                     padding: EdgeInsets.only(top: 10.5, bottom: 30),
-                    child: const Text('Does not have an account?',
+                    child: const Text('Already have an account?',
                       style: TextStyle(color: Colors.white),),
                   ),
                   Container(
@@ -172,7 +190,7 @@ class _SignInState extends State<SignIn> {
                     child: TextButton(
 
                       child: const Text(
-                        'Sign up',
+                        'Sign in',
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.amber,
@@ -181,7 +199,7 @@ class _SignInState extends State<SignIn> {
                       onPressed: () {
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (_) => const SignUp()),
+                          MaterialPageRoute(builder: (_) => const SignIn()),
                         );
                       },
                     ),
@@ -195,35 +213,40 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  Future<void> signIn(String email, String pass) async {
-    if(email.isEmpty || pass.isEmpty){
+  Future<void> signUp(String email, String pass, String confirmPass) async {
+    if(email.isEmpty || pass.isEmpty || confirmPass.isEmpty){
       displaySnackBar('Please fill all the fields!');
+      return;
+    }
+    if(pass!=confirmPass){
+      displaySnackBar('Passwords does not match!');
       return;
     }
     showLoaderDialog(context);
     try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: pass
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: pass,
       );
       Navigator.pop(context);
-      displaySnackBar('Signed in successfully!');
+      displaySnackBar('Sign up successful');
 
       currUser = UserModel(id: null, name: null, email: email, image: null, joined: DateTime.now(), posts: 0);
       ApiService.addUser(currUser!);
       Navigator.pop(context);
 
+
       // } on FirebaseAuthException catch (e) {
-      //   Navigator.pop(context);
-      //   if (e.code == 'user-not-found') {
-      //     displaySnackBar('No user found for that email.');
-      //   } else if (e.code == 'wrong-password') {
-      //     displaySnackBar('Wrong password provided for that user.');
+      //   if (e.code == 'weak-password') {
+      //     displaySnackBar('The password provided is too weak.');
+      //   } else if (e.code == 'email-already-in-use') {
+      //     displaySnackBar('The account already exists for that email.');
       //   }
-    } catch(e){
-      displaySnackBar(e.toString());
+    } catch (e) {
       Navigator.pop(context);
+      displaySnackBar(e.toString());
     }
+
   }
 
   showLoaderDialog(BuildContext context){
@@ -232,7 +255,7 @@ class _SignInState extends State<SignIn> {
         children: [
 
           CircularProgressIndicator(),
-          Container(margin: EdgeInsets.only(left: 20),child:Text("Signing in...",
+          Container(margin: EdgeInsets.only(left: 20),child:Text("Signing up...",
             style: TextStyle(fontSize: 16,),
             textAlign: TextAlign.right,
 
@@ -257,22 +280,4 @@ class _SignInState extends State<SignIn> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackdemo);
   }
-
-  Future<void> forgotPass() async {
-    if(nameController.text.isEmpty){
-      displaySnackBar('Please enter username');
-      return;
-    }
-    try{
-
-      // await FirebaseAuth.instance.sendPasswordResetEmail(email: nameController.text);
-      displaySnackBar('Password reset link sent to your email!');
-    } catch(e){
-      displaySnackBar(e.toString());
-    }
-
-  }
-
-
-
 }
