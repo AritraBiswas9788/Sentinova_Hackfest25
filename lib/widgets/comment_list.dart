@@ -1,39 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:sentinova/services/apiservice.dart';
 import '../models/comment_model.dart';
 import '../widgets/inherited_post_model.dart';
 import '../widgets/user_details_with_follow.dart';
 
-class CommentsListKeyPrefix {
-  static final String singleComment = "Comment";
-  static final String commentUser = "Comment User";
-  static final String commentText = "Comment Text";
-  static final String commentDivider = "Comment Divider";
-}
 
-class CommentsList extends StatelessWidget {
+class CommentsList extends StatefulWidget {
   const CommentsList({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final List<CommentModel> comments =
-        InheritedPostModel.of(context).postData.comments;
+  State<CommentsList> createState() => _CommentsListState();
+}
 
+class _CommentsListState extends State<CommentsList> {
+  final TextEditingController _commentController = TextEditingController();
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  late List<CommentModel> _comments;
+
+  @override
+  void initState() {
+    super.initState();
+    _comments = List.from(InheritedPostModel.of(context).postData.comments);
+  }
+
+  void _handleSendComment() {
+    final text = _commentController.text.trim();
+    if (text.isNotEmpty) {
+      final post = InheritedPostModel.of(context).postData;
+
+      setState(() {
+        ApiService.addComment(post, text);
+      });
+
+      _commentController.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
-      child: ExpansionTile(
-        leading: Icon(Icons.comment),
-        trailing: Text(comments.length.toString()),
-        title: Text("Comments"),
-        children: List<Widget>.generate(
-          comments.length,
-              (int index) => _SingleComment(
-            key: ValueKey("${CommentsListKeyPrefix.singleComment} $index"),
-            index: index,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Add a Comment", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _commentController,
+                  decoration: InputDecoration(
+                    hintText: "Write a comment...",
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.send, color: Colors.blue),
+                onPressed: _handleSendComment,
+              ),
+            ],
           ),
-        ),
+          const SizedBox(height: 16),
+          ExpansionTile(
+            leading: Icon(Icons.comment),
+            trailing: Text(_comments.length.toString()),
+            title: Text("Comments"),
+            children: [
+              AnimatedList(
+                key: _listKey,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                initialItemCount: _comments.length,
+                itemBuilder: (context, index, animation) {
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: FadeTransition(
+                      opacity: animation,
+                      child: _SingleComment(index: index),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
+}
+
+
+class CommentsListKeyPrefix {
+  static const String singleComment = "Comment";
+  static const String commentUser = "Comment User";
+  static const String commentText = "Comment Text";
+  static const String commentDivider = "Comment Divider";
 }
 
 class _SingleComment extends StatelessWidget {
@@ -43,30 +106,32 @@ class _SingleComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CommentModel commentData =
-    InheritedPostModel.of(context).postData.comments[index];
+    final commentData = InheritedPostModel.of(context).postData.comments[index];
 
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          UserDetailsWithFollow(
-            key: ValueKey("${CommentsListKeyPrefix.commentUser} $index"),
-            userData: commentData.user,
-          ),
-          Text(
-            commentData.comment,
-            key: ValueKey("${CommentsListKeyPrefix.commentText} $index"),
-            textAlign: TextAlign.left,
-          ),
-          Divider(
-            key: ValueKey("${CommentsListKeyPrefix.commentDivider} $index"),
-            color: Colors.black45,
-          ),
-        ],
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            UserDetailsWithFollow(
+              key: ValueKey("${CommentsListKeyPrefix.commentUser} $index"),
+              userData: commentData.user,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              commentData.comment,
+              key: ValueKey("${CommentsListKeyPrefix.commentText} $index"),
+            ),
+          ],
+        ),
       ),
     );
+
   }
 }

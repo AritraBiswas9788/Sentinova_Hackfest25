@@ -57,6 +57,7 @@ class _NonImageContents extends StatelessWidget {
           ),
           SizedBox(height: 8.0),
           PostStats(),
+          SizedBox(height: 16),
           CommentsList(),
         ],
       ),

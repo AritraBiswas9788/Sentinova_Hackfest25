@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:sentinova/helper/data.dart';
 import 'package:sentinova/helper/demo_values.dart';
+import 'package:sentinova/services/apiservice.dart';
 import 'dart:convert';
 
 import '../helper/constant.dart';
@@ -83,12 +84,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
   void _submitPost() {
     if (_formKey.currentState!.validate()) {
-      if (_uploadedImageUrl == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please upload an image")),
-        );
-        return;
-      }
+      _uploadedImageUrl ??= "https://static.thenounproject.com/png/1095867-200.png";
 
       var author = currUser ?? UserModel(
         id: "u001",
@@ -101,7 +97,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
 
 
 
-      final newPost = PostModel(
+      var newPost = PostModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         title: _titleController.text,
         summary: _summaryController.text,
@@ -112,15 +108,22 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         views: 0,
         author: author,
         comments: <CommentModel>[],
-      )
-        ..options.addAll(
-          _isPoll
-              ? _pollOptionControllers
-              .where((c) => c.text.trim().isNotEmpty)
-              .map((c) => PollOption(text: c.text.trim()))
-              .toList()
-              : [],
-        );
+        options: _isPoll
+            ? _pollOptionControllers
+            .where((c) => c.text.trim().isNotEmpty)
+            .map((c) => PollOption(text: c.text.trim()))
+            .toList()
+            : [],
+        isPoll: _isPoll,
+      );
+        // ..options.addAll(
+        //   _isPoll
+        //       ? _pollOptionControllers
+        //       .where((c) => c.text.trim().isNotEmpty)
+        //       .map((c) => PollOption(text: c.text.trim()))
+        //       .toList()
+        //       : [],
+        // );
 
       _sendPostToMongoDB(newPost);
       Navigator.pop(context);
@@ -128,8 +131,11 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   Future<void> _sendPostToMongoDB(PostModel post) async {
-    DemoValues.posts.add(post);
+    // DemoValues.posts.add(post);
     // await MongoService.uploadPostToEvent("your-event-id", post);
+    print("uploading post...");
+    await ApiService.addPost(post);
+    print("uploaded post!!!");
   }
 
   InputDecoration _inputDecoration(String label, IconData icon) {
