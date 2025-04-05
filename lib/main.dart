@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sentinova/screens/community_screen.dart';
-import 'package:sentinova/services/mongo_service.dart';
 import 'package:sentinova/themes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MongoService.connect(); // Make sure to connect before using
+  // await MongoService.connect(); // Make sure to connect before using
   runApp(Sentinova());
 }
 

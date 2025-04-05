@@ -6,7 +6,6 @@ class UserModel {
   final String name;
   final String email;
   final String image;
-  final int followers;
   final DateTime joined;
   final int posts;
 
@@ -15,10 +14,29 @@ class UserModel {
     required this.name,
     required this.email,
     required this.image,
-    required this.followers,
     required this.joined,
     required this.posts,
   });
 
   String get postTimeFormatted => DateFormat.yMMMMEEEEd().format(joined);
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      image: json['image'] ?? '',
+      joined: DateTime.tryParse(json['joined'] ?? '') ?? DateTime.now(),
+      posts: json['posts'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'email': email,
+    'image': image,
+    'joined': joined.toIso8601String(),
+    'posts': posts,
+  };
 }

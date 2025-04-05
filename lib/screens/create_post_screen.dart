@@ -2,12 +2,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:sentinova/helper/data.dart';
+import 'package:sentinova/helper/demo_values.dart';
 import 'dart:convert';
 
 import '../models/user_model.dart';
 import '../models/comment_model.dart';
 import '../models/post_model.dart';
-import '../services/mongo_service.dart';
 
 class CreatePostScreen extends StatefulWidget {
   const CreatePostScreen({super.key});
@@ -89,15 +90,16 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         return;
       }
 
-      final dummyAuthor = UserModel(
+      var author = currUser ?? UserModel(
         id: "u001",
         name: "John Doe",
         email: "john.doe@example.com",
         image: "https://i.pravatar.cc/300",
-        followers: 123,
         joined: DateTime(2022, 5, 10),
         posts: 42,
       );
+
+
 
       final newPost = PostModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -108,7 +110,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         postTime: DateTime.now(),
         reacts: 0,
         views: 0,
-        author: dummyAuthor,
+        author: author,
         comments: <CommentModel>[],
       )
         ..options.addAll(
@@ -126,6 +128,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   Future<void> _sendPostToMongoDB(PostModel post) async {
+    DemoValues.posts.add(post);
     // await MongoService.uploadPostToEvent("your-event-id", post);
   }
 

@@ -1,3 +1,6 @@
+import 'package:sentinova/models/post_model.dart';
+import 'package:sentinova/models/user_model.dart';
+
 class Events {
   Events({
     required this.events,
@@ -5,12 +8,19 @@ class Events {
 
   final List<Event> events;
 
-  factory Events.fromJson(Map<String, dynamic> json){
+  factory Events.fromJson(Map<String, dynamic> json) {
     return Events(
-      events: json["events"] == null ? [] : List<Event>.from(json["events"]!.map((x) => Event.fromJson(x))),
+      events: json["events"] == null
+          ? []
+          : List<Event>.from(json["events"]!.map((x) => Event.fromJson(x))),
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "events": events.map((e) => e.toJson()).toList(),
+    };
+  }
 }
 
 class Event {
@@ -27,6 +37,7 @@ class Event {
     required this.v,
     required this.analysis,
     required this.posts,
+    required this.communityPosts,
   });
 
   final String? id;
@@ -41,8 +52,9 @@ class Event {
   final int? v;
   final Analysis? analysis;
   final List<Post> posts;
+  final List<PostModel> communityPosts;
 
-  factory Event.fromJson(Map<String, dynamic> json){
+  factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
       id: json["_id"],
       name: json["name"],
@@ -50,15 +62,61 @@ class Event {
       description: json["description"],
       location: json["location"],
       mapUrl: json["map_url"],
-      blocks: json["blocks"] == null ? [] : List<Block>.from(json["blocks"]!.map((x) => Block.fromJson(x))),
+      blocks: json["blocks"] == null
+          ? []
+          : List<Block>.from(json["blocks"].map((x) => Block.fromJson(x))),
       createdAt: DateTime.tryParse(json["createdAt"] ?? ""),
       updatedAt: DateTime.tryParse(json["updatedAt"] ?? ""),
       v: json["__v"],
-      analysis: json["analysis"] == null ? null : Analysis.fromJson(json["analysis"]),
-      posts: json["posts"] == null ? [] : List<Post>.from(json["posts"]!.map((x) => Post.fromJson(x))),
+      analysis:
+      json["analysis"] == null ? null : Analysis.fromJson(json["analysis"]),
+      posts: json["posts"] == null
+          ? []
+          : List<Post>.from(json["posts"].map((x) => Post.fromJson(x))),
+      communityPosts: json["communityPosts"] == null
+          ? []
+          : List<PostModel>.from(json["communityPosts"].map((x) => PostModel(
+        id: x["id"],
+        title: x["title"],
+        summary: x["summary"],
+        body: x["body"],
+        imageURL: x["imageURL"],
+        author: UserModel.fromJson(x["author"]),
+        postTime: DateTime.tryParse(x["postTime"]) ?? DateTime.now(),
+        reacts: x["reacts"],
+        views: x["views"],
+        comments: [], // Populate if comment data exists
+        isPoll: x["isPoll"] ?? false,
+        options: x["options"] == null
+            ? []
+            : List<PollOption>.from(x["options"].map((o) => PollOption(
+          text: o["text"],
+          votes: o["votes"],
+        ))),
+        votedUids: x["votedUids"] == null
+            ? []
+            : List<String>.from(x["votedUids"]),
+      ))),
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "_id": id,
+      "name": name,
+      "date": date?.toIso8601String(),
+      "description": description,
+      "location": location,
+      "map_url": mapUrl,
+      "blocks": blocks.map((b) => b.toJson()).toList(),
+      "createdAt": createdAt?.toIso8601String(),
+      "updatedAt": updatedAt?.toIso8601String(),
+      "__v": v,
+      "analysis": analysis?.toJson(),
+      "posts": posts.map((p) => p.toJson()).toList(),
+      "communityPosts": communityPosts.map((p) => p.toJson()).toList(),
+    };
+  }
 }
 
 class Analysis {
@@ -72,14 +130,27 @@ class Analysis {
   final OverallSentiment? overallSentiment;
   final IssuesAndPositives? issuesAndPositives;
 
-  factory Analysis.fromJson(Map<String, dynamic> json){
+  factory Analysis.fromJson(Map<String, dynamic> json) {
     return Analysis(
-      keywordSentiment: json["keyword_sentiment"] == null ? null : KeywordSentiment.fromJson(json["keyword_sentiment"]),
-      overallSentiment: json["overall_sentiment"] == null ? null : OverallSentiment.fromJson(json["overall_sentiment"]),
-      issuesAndPositives: json["issues_and_positives"] == null ? null : IssuesAndPositives.fromJson(json["issues_and_positives"]),
+      keywordSentiment: json["keyword_sentiment"] == null
+          ? null
+          : KeywordSentiment.fromJson(json["keyword_sentiment"]),
+      overallSentiment: json["overall_sentiment"] == null
+          ? null
+          : OverallSentiment.fromJson(json["overall_sentiment"]),
+      issuesAndPositives: json["issues_and_positives"] == null
+          ? null
+          : IssuesAndPositives.fromJson(json["issues_and_positives"]),
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "keyword_sentiment": keywordSentiment?.toJson(),
+      "overall_sentiment": overallSentiment?.toJson(),
+      "issues_and_positives": issuesAndPositives?.toJson(),
+    };
+  }
 }
 
 class IssuesAndPositives {
@@ -91,13 +162,23 @@ class IssuesAndPositives {
   final List<String> positive;
   final List<String> negative;
 
-  factory IssuesAndPositives.fromJson(Map<String, dynamic> json){
+  factory IssuesAndPositives.fromJson(Map<String, dynamic> json) {
     return IssuesAndPositives(
-      positive: json["positive"] == null ? [] : List<String>.from(json["positive"]!.map((x) => x)),
-      negative: json["negative"] == null ? [] : List<String>.from(json["negative"]!.map((x) => x)),
+      positive: json["positive"] == null
+          ? []
+          : List<String>.from(json["positive"]!.map((x) => x)),
+      negative: json["negative"] == null
+          ? []
+          : List<String>.from(json["negative"]!.map((x) => x)),
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "positive": positive,
+      "negative": negative,
+    };
+  }
 }
 
 class KeywordSentiment {
@@ -107,52 +188,32 @@ class KeywordSentiment {
   });
 
   final List<String> keywords;
-  final KeywordSentimentDistribution? distribution;
+  final Map<String, Sentiment> distribution;
 
-  factory KeywordSentiment.fromJson(Map<String, dynamic> json){
+  factory KeywordSentiment.fromJson(Map<String, dynamic> json) {
     return KeywordSentiment(
-      keywords: json["keywords"] == null ? [] : List<String>.from(json["keywords"]!.map((x) => x)),
-      distribution: json["distribution"] == null ? null : KeywordSentimentDistribution.fromJson(json["distribution"]),
+      keywords: json["keywords"] == null
+          ? []
+          : List<String>.from(json["keywords"].map((x) => x)),
+      distribution: json["distribution"] == null
+          ? {}
+          : Map.from(json["distribution"]).map(
+            (k, v) => MapEntry(k, Sentiment.fromJson(v)),
+      ),
     );
   }
 
-}
-
-class KeywordSentimentDistribution {
-  KeywordSentimentDistribution({
-    required this.gSoC,
-    required this.proposal,
-    required this.deadline,
-    required this.mentors,
-    required this.beginner,
-    required this.coding,
-    required this.openSource,
-  });
-
-  final Beginner? gSoC;
-  final Beginner? proposal;
-  final Beginner? deadline;
-  final Beginner? mentors;
-  final Beginner? beginner;
-  final Beginner? coding;
-  final Beginner? openSource;
-
-  factory KeywordSentimentDistribution.fromJson(Map<String, dynamic> json){
-    return KeywordSentimentDistribution(
-      gSoC: json["GSoC"] == null ? null : Beginner.fromJson(json["GSoC"]),
-      proposal: json["Proposal"] == null ? null : Beginner.fromJson(json["Proposal"]),
-      deadline: json["Deadline"] == null ? null : Beginner.fromJson(json["Deadline"]),
-      mentors: json["Mentors"] == null ? null : Beginner.fromJson(json["Mentors"]),
-      beginner: json["Beginner"] == null ? null : Beginner.fromJson(json["Beginner"]),
-      coding: json["Coding"] == null ? null : Beginner.fromJson(json["Coding"]),
-      openSource: json["Open Source"] == null ? null : Beginner.fromJson(json["Open Source"]),
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      "keywords": keywords,
+      "distribution":
+      distribution.map((k, v) => MapEntry(k, v.toJson())),
+    };
   }
-
 }
 
-class Beginner {
-  Beginner({
+class Sentiment {
+  Sentiment({
     required this.veryPositive,
     required this.positive,
     required this.neutral,
@@ -166,8 +227,8 @@ class Beginner {
   final int? negative;
   final int? veryNegative;
 
-  factory Beginner.fromJson(Map<String, dynamic> json){
-    return Beginner(
+  factory Sentiment.fromJson(Map<String, dynamic> json) {
+    return Sentiment(
       veryPositive: json["very positive"],
       positive: json["positive"],
       neutral: json["neutral"],
@@ -176,6 +237,15 @@ class Beginner {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "very positive": veryPositive,
+      "positive": positive,
+      "neutral": neutral,
+      "negative": negative,
+      "very negative": veryNegative,
+    };
+  }
 }
 
 class OverallSentiment {
@@ -187,13 +257,21 @@ class OverallSentiment {
   final String? overallLabel;
   final ConfidenceClass? distribution;
 
-  factory OverallSentiment.fromJson(Map<String, dynamic> json){
+  factory OverallSentiment.fromJson(Map<String, dynamic> json) {
     return OverallSentiment(
       overallLabel: json["overall_label"],
-      distribution: json["distribution"] == null ? null : ConfidenceClass.fromJson(json["distribution"]),
+      distribution: json["distribution"] == null
+          ? null
+          : ConfidenceClass.fromJson(json["distribution"]),
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "overall_label": overallLabel,
+      "distribution": distribution?.toJson(),
+    };
+  }
 }
 
 class ConfidenceClass {
@@ -207,7 +285,7 @@ class ConfidenceClass {
   final double? neutral;
   final double? negative;
 
-  factory ConfidenceClass.fromJson(Map<String, dynamic> json){
+  factory ConfidenceClass.fromJson(Map<String, dynamic> json) {
     return ConfidenceClass(
       positive: json["positive"],
       neutral: json["neutral"],
@@ -215,6 +293,13 @@ class ConfidenceClass {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "positive": positive,
+      "neutral": neutral,
+      "negative": negative,
+    };
+  }
 }
 
 class Block {
@@ -224,22 +309,33 @@ class Block {
     required this.id,
   });
 
-  final BottomRight? topLeft;
-  final BottomRight? bottomRight;
+  final Dimen? topLeft;
+  final Dimen? bottomRight;
   final String? id;
 
-  factory Block.fromJson(Map<String, dynamic> json){
+  factory Block.fromJson(Map<String, dynamic> json) {
     return Block(
-      topLeft: json["topLeft"] == null ? null : BottomRight.fromJson(json["topLeft"]),
-      bottomRight: json["bottomRight"] == null ? null : BottomRight.fromJson(json["bottomRight"]),
+      topLeft: json["topLeft"] == null
+          ? null
+          : Dimen.fromJson(json["topLeft"]),
+      bottomRight: json["bottomRight"] == null
+          ? null
+          : Dimen.fromJson(json["bottomRight"]),
       id: json["_id"],
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "topLeft": topLeft?.toJson(),
+      "bottomRight": bottomRight?.toJson(),
+      "_id": id,
+    };
+  }
 }
 
-class BottomRight {
-  BottomRight({
+class Dimen {
+  Dimen({
     required this.x,
     required this.y,
   });
@@ -247,13 +343,19 @@ class BottomRight {
   final double? x;
   final double? y;
 
-  factory BottomRight.fromJson(Map<String, dynamic> json){
-    return BottomRight(
+  factory Dimen.fromJson(Map<String, dynamic> json) {
+    return Dimen(
       x: json["x"],
       y: json["y"],
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "x": x,
+      "y": y,
+    };
+  }
 }
 
 class Post {
@@ -281,7 +383,7 @@ class Post {
   final dynamic url;
   final Sentiment? sentiment;
 
-  factory Post.fromJson(Map<String, dynamic> json){
+  factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       platform: json["platform"],
       postId: json["post_id"],
@@ -292,26 +394,24 @@ class Post {
       comments: json["comments"],
       shares: json["shares"],
       url: json["url"],
-      sentiment: json["sentiment"] == null ? null : Sentiment.fromJson(json["sentiment"]),
+      sentiment: json["sentiment"] == null
+          ? null
+          : Sentiment.fromJson(json["sentiment"]),
     );
   }
 
-}
-
-class Sentiment {
-  Sentiment({
-    required this.label,
-    required this.confidence,
-  });
-
-  final String? label;
-  final ConfidenceClass? confidence;
-
-  factory Sentiment.fromJson(Map<String, dynamic> json){
-    return Sentiment(
-      label: json["label"],
-      confidence: json["confidence"] == null ? null : ConfidenceClass.fromJson(json["confidence"]),
-    );
+  Map<String, dynamic> toJson() {
+    return {
+      "platform": platform,
+      "post_id": postId,
+      "username": username,
+      "text": text,
+      "timestamp": timestamp,
+      "likes": likes,
+      "comments": comments,
+      "shares": shares,
+      "url": url,
+      "sentiment": sentiment?.toJson(),
+    };
   }
-
 }
