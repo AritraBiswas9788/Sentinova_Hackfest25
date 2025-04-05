@@ -16,7 +16,7 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double aspectRatio = isLandscape(context) ? 6 / 2 : 6 / 3;
+    final double aspectRatio = isLandscape(context) ? 6 / 2 : (postData.isPoll ? 6 / 5 : 6 / 3);
 
     return GestureDetector(
       onTap: () {
@@ -153,48 +153,50 @@ class _PollPostWidgetState extends State<PollPostWidget> {
     bool hasVoted = widget.post.votedUids.contains(widget.currentUserId);
     final totalVotes = widget.post.options.fold<int>(0, (sum, option) => sum + option.votes);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          title: Text(widget.post.title, style: Theme.of(context).textTheme.titleLarge),
-          subtitle: Text(widget.post.summary),
-        ),
-        ...widget.post.options.asMap().entries.map((entry) {
-          int index = entry.key;
-          PollOption option = entry.value;
-
-          if (hasVoted) {
-            double percentage = totalVotes == 0 ? 0 : (option.votes / totalVotes) * 100;
-            return ListTile(
-              title: Text(option.text),
-              subtitle: LinearProgressIndicator(value: percentage / 100),
-              trailing: Text('${option.votes} votes'),
-            );
-          } else {
-            return RadioListTile<int>(
-              title: Text(option.text),
-              value: index,
-              groupValue: selectedOptionIndex,
-              onChanged: (int? value) {
-                setState(() {
-                  selectedOptionIndex = value;
-                });
-              },
-            );
-          }
-        }),
-        if (!hasVoted)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: submitVote,
-              child: const Text("Submit Vote"),
-            ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            title: Text(widget.post.title, style: Theme.of(context).textTheme.titleLarge),
+            subtitle: Text(widget.post.summary),
           ),
-        const Divider(color: Colors.grey),
-        const _PostDetails(),
-      ],
+          ...widget.post.options.asMap().entries.map((entry) {
+            int index = entry.key;
+            PollOption option = entry.value;
+
+            if (hasVoted) {
+              double percentage = totalVotes == 0 ? 0 : (option.votes / totalVotes) * 100;
+              return ListTile(
+                title: Text(option.text),
+                subtitle: LinearProgressIndicator(value: percentage / 100),
+                trailing: Text('${option.votes} votes'),
+              );
+            } else {
+              return RadioListTile<int>(
+                title: Text(option.text),
+                value: index,
+                groupValue: selectedOptionIndex,
+                onChanged: (int? value) {
+                  setState(() {
+                    selectedOptionIndex = value;
+                  });
+                },
+              );
+            }
+          }),
+          if (!hasVoted)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: submitVote,
+                child: const Text("Submit Vote"),
+              ),
+            ),
+          const Divider(color: Colors.grey),
+          const _PostDetails(),
+        ],
+      ),
     );
   }
 }

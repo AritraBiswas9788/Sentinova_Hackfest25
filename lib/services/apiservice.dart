@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../models/eventmodel.dart';
+import '../models/event_model.dart';
 // import the file where you defined Event, Events, etc.
 
 class ApiService {
