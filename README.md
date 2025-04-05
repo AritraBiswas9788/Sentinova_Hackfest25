@@ -1,6 +1,6 @@
 # sentinova
 
-A new Flutter project.
+A new Flutter project for sentimental analysis.
 
 ## Getting Started
 
