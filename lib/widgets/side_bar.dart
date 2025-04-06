@@ -30,6 +30,7 @@ class NotificationSidebar extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: Column(
               children: [
+                SizedBox(height: 20,),
                 Row(
                   children: [
                     Icon(Icons.notifications, color: Colors.white),

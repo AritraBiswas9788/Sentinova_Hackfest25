@@ -74,7 +74,7 @@ class _SocialCardsRowState extends State<SocialCardsRow> {
         child: ListView.builder(
           controller: _scrollController,
           scrollDirection: Axis.horizontal,
-          itemCount: widget.cards.length * 100, // infinite loop effect
+          itemCount: widget.cards.length * 10, // infinite loop effect
           itemBuilder: (context, index) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),

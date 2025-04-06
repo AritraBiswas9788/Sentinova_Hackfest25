@@ -16,7 +16,7 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double aspectRatio = isLandscape(context) ? 6 / 2 : (postData.isPoll ? 6 / 5 : 6 / 3);
+    final double aspectRatio = isLandscape(context) ? 6 / 2 : (postData.isPoll ? 3.5 / 5 : 4 / 3);
 
     return GestureDetector(
       onTap: () {
@@ -69,8 +69,8 @@ class _Post extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Expanded(
-      flex: 3,
+    return Expanded(
+      flex: 1,
       child: Row(children: <Widget>[_PostImage(), _PostTitleSummaryAndTime()]),
     );
   }
@@ -138,11 +138,15 @@ class _PostDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final PostModel postData = InheritedPostModel.of(context).postData;
 
-    return Row(
-      children: <Widget>[
-        Expanded(flex: 3, child: UserDetails(userData: postData.author)),
-        const Expanded(flex: 1, child: PostStats()),
-      ],
+    return Container(
+      alignment: Alignment.center,
+      height: 70,
+      child: Row(
+        children: <Widget>[
+          Expanded(flex: 3, child: UserDetails(userData: postData.author)),
+          const Expanded(flex: 1, child: PostStats()),
+        ],
+      ),
     );
   }
 }
