@@ -6,6 +6,7 @@ UserModel? currUser = UserModel(
   name: "Shakeen",
   email: "shakeen@gmail.com",
   image: DEFAULT_IMG,
+  password: "123",
   joined: DateTime(2017, 6, 30),
   posts: 14,
 );

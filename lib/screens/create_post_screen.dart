@@ -92,6 +92,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
         id: "u001",
         name: "John Doe",
         email: "john.doe@example.com",
+        password: "123456",
         image: "https://i.pravatar.cc/300",
         joined: DateTime(2022, 5, 10),
         posts: 42,

@@ -233,7 +233,7 @@ class _SignUpState extends State<SignUp> {
       Navigator.pop(context);
       displaySnackBar('Sign up successful');
 
-      currUser = UserModel(id: null, name: null, email: email, image: DEFAULT_IMG, joined: DateTime.now(), posts: 0);
+      currUser = UserModel(id: null, name: null, email: email, password: pass, image: DEFAULT_IMG, joined: DateTime.now(), posts: 0);
       ApiService.addUser(currUser!);
       Navigator.pop(context);
 
