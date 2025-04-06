@@ -97,14 +97,14 @@ class _ProfileState extends State<Profile> {
                     color: Colors.amberAccent,
                   ),
                 ),
-                const Text(
-                  'Ondc Merchant',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
+                // const Text(
+                //   'Ondc Merchant',
+                //   style: TextStyle(
+                //     color: Colors.white,
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 20,
+                //   ),
+                // ),
               ],
             ),
           ),

@@ -48,18 +48,21 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
   }
 
   Future<void> _uploadToCloudinary(File image) async {
-    const uploadPreset = 'your-upload-preset';
+    const uploadPreset = 'sentinova';
+    const cloudName = '$CLOUD_NAME'; // Assuming CLOUD_NAME is a String constant
 
     final url =
-    Uri.parse('https://api.cloudinary.com/v1_1/$CLOUD_NAME/image/upload');
+    Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
 
     final request = http.MultipartRequest('POST', url)
-      ..fields[UPLOAD_PRESET] = uploadPreset
+      ..fields['upload_preset'] = uploadPreset // Use the correct key 'upload_preset'
       ..files.add(await http.MultipartFile.fromPath('file', image.path));
 
     final response = await request.send();
     final res = await http.Response.fromStream(response);
-
+    print('STATUS Cloudi: ${response.statusCode}');
+    print('BODY cloudi: ${res.body}');
+    print(res.toString());
     if (response.statusCode == 200) {
       final responseData = json.decode(res.body);
       setState(() {
