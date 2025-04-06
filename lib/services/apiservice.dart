@@ -54,6 +54,10 @@ class ApiService {
 
   static Future<void> addPost(PostModel post) async {
     final url = Uri.parse('$baseUrl/events/addPost');
+    print(jsonEncode({
+      'info': post.toJson().toString(),
+      'eventId': eventID,
+    }));
 
     final response = await http.post(
       url,
@@ -101,10 +105,9 @@ class ApiService {
 
   static Future<void> addUser(UserModel user) async {
     final url = Uri.parse('$baseUrl/users');
-
+    print(user.toJson().toString());
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
       body: user.toJson(),
     );
 

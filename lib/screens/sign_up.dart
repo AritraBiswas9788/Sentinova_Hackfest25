@@ -5,6 +5,8 @@ import 'package:sentinova/models/user_model.dart';
 import 'package:sentinova/screens/sign_in.dart';
 import 'package:sentinova/services/apiservice.dart';
 
+import '../helper/constant.dart';
+
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -28,23 +30,23 @@ class _SignUpState extends State<SignUp> {
     // double ffem = fem * 0.97;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.all(10),
-
-          child: Image.asset('assets/ondc_icon.png'),
-          // child: const Text(
-          //   'ONDC',
-          //   style: TextStyle(
-          //       color: Colors.blue,
-          //       fontWeight: FontWeight.w500,
-          //       fontSize: 30),
-          // ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.grey[850],
-      ),
+      // appBar: AppBar(
+      //   title: Container(
+      //     alignment: Alignment.center,
+      //     margin: const EdgeInsets.all(10),
+      //
+      //     child: Image.asset('assets/ondc_icon.png'),
+      //     // child: const Text(
+      //     //   'ONDC',
+      //     //   style: TextStyle(
+      //     //       color: Colors.blue,
+      //     //       fontWeight: FontWeight.w500,
+      //     //       fontSize: 30),
+      //     // ),
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.grey[850],
+      // ),
       backgroundColor: Colors.grey[850],
       body: Padding(
           padding: const EdgeInsets.all(10),
@@ -231,7 +233,7 @@ class _SignUpState extends State<SignUp> {
       Navigator.pop(context);
       displaySnackBar('Sign up successful');
 
-      currUser = UserModel(id: null, name: null, email: email, image: null, joined: DateTime.now(), posts: 0);
+      currUser = UserModel(id: null, name: null, email: email, image: DEFAULT_IMG, joined: DateTime.now(), posts: 0);
       ApiService.addUser(currUser!);
       Navigator.pop(context);
 
