@@ -9,15 +9,16 @@ Sentinova is an intelligent event-monitoring system that leverages **AI, audio-v
 ## 📱 Preview
 
 <img src="https://github.com/yourusername/sentinova/assets/preview1.gif" width="300" /> &nbsp;&nbsp;&nbsp; <img src="https://github.com/yourusername/sentinova/assets/preview2.gif" width="300" />
-| Audio Monitoring | Overcrowding Detection |
-|------------------|------------------------|
-|![WhatsApp Image 2025-04-06 at 12 55 38_1a3e264b](https://github.com/user-attachments/assets/ddc155c6-f2dc-46ac-8b14-19e52618b38d)|![WhatsApp Image 2025-04-06 at 12 55 39_9bb59782](https://github.com/user-attachments/assets/39f25b85-2db6-41af-aa7c-5bf097075b3d)|
+|                    |                        |              |                            |
+|------------------|------------------------|------------------|------------------------|
+|![WhatsApp Image 2025-04-06 at 12 55 38_1a3e264b](https://github.com/user-attachments/assets/ddc155c6-f2dc-46ac-8b14-19e52618b38d)|![WhatsApp Image 2025-04-06 at 12 55 39_9bb59782](https://github.com/user-attachments/assets/39f25b85-2db6-41af-aa7c-5bf097075b3d)|![WhatsApp Image 2025-04-06 at 12 55 40_eec55513](https://github.com/user-attachments/assets/0ec1c902-fae5-4ff4-b786-9901f69af65b)|![WhatsApp Image 2025-04-06 at 12 55 40_eec55513](https://github.com/user-attachments/assets/0ec1c902-fae5-4ff4-b786-9901f69af65b)|
 
-![WhatsApp Image 2025-04-06 at 12 55 40_eec55513](https://github.com/user-attachments/assets/0ec1c902-fae5-4ff4-b786-9901f69af65b)
-![WhatsApp Image 2025-04-06 at 12 55 41_06879ac5](https://github.com/user-attachments/assets/d0e36593-b0a3-4a93-9898-827ada351660)
-![WhatsApp Image 2025-04-06 at 12 55 55_ac62153c](https://github.com/user-attachments/assets/346c4e33-9793-4efb-a078-5800e123eaeb)
-![WhatsApp Image 2025-04-06 at 13 02 30_3dbcee93](https://github.com/user-attachments/assets/4771f9e1-b044-4616-8148-b732f1f83d12)
-![WhatsApp Image 2025-04-06 at 13 02 31_c41ea533](https://github.com/user-attachments/assets/1e0cc175-8ed6-494a-9652-42968d3a0b60)
+|                    |                        |              |                            |
+|------------------|------------------------|------------------|------------------------|
+|![WhatsApp Image 2025-04-06 at 12 55 41_06879ac5](https://github.com/user-attachments/assets/d0e36593-b0a3-4a93-9898-827ada351660)|![WhatsApp Image 2025-04-06 at 12 55 55_ac62153c](https://github.com/user-attachments/assets/346c4e33-9793-4efb-a078-5800e123eaeb)|![WhatsApp Image 2025-04-06 at 13 02 30_3dbcee93](https://github.com/user-attachments/assets/4771f9e1-b044-4616-8148-b732f1f83d12)|![WhatsApp Image 2025-04-06 at 13 02 31_c41ea533](https://github.com/user-attachments/assets/1e0cc175-8ed6-494a-9652-42968d3a0b60)|
+
+
+
 ![WhatsApp Image 2025-04-06 at 13 02 31_226046a3](https://github.com/user-attachments/assets/65f0afb0-3081-40a6-aa78-8f7e5bafd9b2)
 
 
