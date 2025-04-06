@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UserModel {
-  final String? id;
+  String? id;
   final String? name;
   final String email;
   final String password;
@@ -10,11 +10,11 @@ class UserModel {
   final DateTime joined;
   final int posts;
 
-  const UserModel({
+  UserModel({
     required this.id,
     required this.name,
     required this.email,
-    this.password = "",
+    required this.password,
     required this.image,
     required this.joined,
     required this.posts,

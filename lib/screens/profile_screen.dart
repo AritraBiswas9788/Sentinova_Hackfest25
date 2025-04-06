@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sentinova/helper/constant.dart';
-import 'package:sentinova/helper/data.dart';
-import 'package:sentinova/helper/init_user.dart';
 import 'package:sentinova/screens/sign_in.dart';
 
+import '../helper/constant.dart';
+import '../helper/data.dart';
+import '../helper/init_user.dart';
 import '../widgets/loading_widget.dart';
 
 class Profile extends StatefulWidget {
@@ -17,54 +17,43 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool isFetched = false;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  void getData() async {
-    await InitUser.initialize();
-    setState(() {
-      isFetched = true;
-    });
+    if (FirebaseAuth.instance.currentUser == null) {
+      // delay to ensure navigation doesn't throw context errors
+      Future.microtask(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const SignIn()),
+        );
+      });
+    } else {
+      getData();
+    }
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if(FirebaseAuth.instance.currentUser == null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const SignIn()),
-      );
+  Future<void> getData() async {
+    await InitUser.initialize();
+    if (mounted) {
+      setState(() => isFetched = true);
     }
-    getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    String? s = FirebaseAuth.instance.currentUser?.email.toString();
-    // s= s?.substring(0,s.indexOf('@'));
-    // return Scaffold(
-    //   body: Center(
-    //     child: ElevatedButton.icon(onPressed: (){
-    //       logout();
-    //
-    //     },
-    //       icon: Icon(Icons.logout),
-    //       label: Text('Logout'),
-    //     ),
-    //   ),
-    // );
+    final userEmail = FirebaseAuth.instance.currentUser?.email ?? 'N/A';
+
     return !isFetched
-        ? LoadingWidget()
+        ? const LoadingWidget()
         : Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[850],
-        title: Center(
-          child: const Text(
+        title: const Center(
+          child: Text(
             'Profile',
-            style: TextStyle(
-              color: Colors.white,
-              // fontSize: 30,
-            ),
+            style: TextStyle(color: Colors.white),
           ),
         ),
       ),
@@ -77,65 +66,38 @@ class _ProfileState extends State<Profile> {
                 colors: [Colors.grey, Colors.grey.shade700],
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                stops: [0.5, 0.9],
+                stops: const [0.5, 0.9],
               ),
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    // CircleAvatar(
-                    //   backgroundColor: Colors.red.shade300,
-                    //   minRadius: 35.0,
-                    //   child: Icon(
-                    //     Icons.call,
-                    //     size: 30.0,
-                    //   ),
-                    // ),
-                    CircleAvatar(
-                      backgroundColor: Colors.white70,
-                      minRadius: 60.0,
-                      child: CircleAvatar(
-                          radius: 50.0,
-                          backgroundImage:
-                          NetworkImage(currUser?.image ?? DEFAULT_IMG)
-                        // NetworkImage('https://avatars0.githubusercontent.com/u/28812093?s=460&u=06471c90e03cfd8ce2855d217d157c93060da490&v=4'),
-                      ),
-                    ),
-                    //     CircleAvatar(
-                    //       backgroundColor: Colors.red.shade300,
-                    //       minRadius: 35.0,
-                    //       child: Icon(
-                    //         Icons.message,
-                    //         size: 30.0,
-                    //       ),
-                    //     ),
-                  ],
+                CircleAvatar(
+                  backgroundColor: Colors.white70,
+                  minRadius: 60.0,
+                  child: CircleAvatar(
+                    radius: 50.0,
+                    backgroundImage: NetworkImage(currUser?.image ?? DEFAULT_IMG),
+                  ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 Text(
-                  // 'Bablu Gannu',
-                  currUser!.name.toString(),
-                  style: TextStyle(
+                  currUser?.name ?? 'No Name',
+                  style: const TextStyle(
                     fontSize: 35,
                     fontWeight: FontWeight.bold,
                     color: Colors.amberAccent,
                   ),
                 ),
                 Text(
-                  '${s}',
-                  style: TextStyle(
+                  userEmail,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.amberAccent,
                   ),
                 ),
-                Text(
+                const Text(
                   'Ondc Merchant',
                   style: TextStyle(
                     color: Colors.white,
@@ -146,164 +108,95 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-
-          Container(
-            child: Column(
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                    'Email ID',
-                    style: TextStyle(
-                      color: Colors.deepOrange,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    currUser!.email.toString(),
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
+          Column(
+            children: <Widget>[
+              _buildInfoTile("Email ID", currUser?.email ?? "Not available"),
+              _buildInfoTile("Posts", (currUser?.posts ?? 0).toString()),
+              _buildInfoTile("Reward points", calculatePoints(currUser?.posts ?? 0)),
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 40),
+                  child: TextButton.icon(
+                    onPressed: _showLogoutSheet,
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Logout', style: TextStyle(fontSize: 18)),
                   ),
                 ),
-                Divider(
-                  indent: 15,
-                  endIndent: 15,
-                ),
-                ListTile(
-                  title: Text(
-                    'Posts',
-                    style: TextStyle(
-                      color: Colors.deepOrange,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    currUser!.posts.toString(),
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Divider(
-                  indent: 15,
-                  endIndent: 15,
-                ),
-                ListTile(
-                  title: Text(
-                    'Reward points',
-                    style: TextStyle(
-                      color: Colors.deepOrange,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Text(
-                    calculatePoints(currUser!.posts ?? 0),
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(0, 60.0, 0, 30),
-                    child: TextButton.icon(
-                      onPressed: () {
-                        // logout();
-
-                        showModalBottomSheet<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return Container(
-                              height: 200,
-                              color: Colors.black87,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceAround,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Container(
-                                      margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
-                                      child: Text('Are you sure want to Logout....',
-                                        style: TextStyle(
-                                          //      height: 30,
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: double.maxFinite,
-                                      child: ElevatedButton(
-                                        style: ButtonStyle(
-                                            fixedSize: MaterialStatePropertyAll(Size.infinite)
-                                        ),
-                                        child:
-                                        const Text('LOGOUT'),
-                                        onPressed: () =>
-                                            logout(), //Navigator.pop(context),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      child:
-                                      const Text('Cancel',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      onPressed: () =>
-                                          Navigator.pop(context),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                        // },
-                        //getData();
-                      },
-                      icon: Icon(Icons.logout),
-                      label: Text('Logout',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  void displaySnackBar(String s) {
-    var snackdemo = SnackBar(
-      content: Text(s),
-      backgroundColor: Colors.green,
-      elevation: 10,
-      behavior: SnackBarBehavior.floating,
-      margin: EdgeInsets.all(5),
+  Widget _buildInfoTile(String title, String subtitle) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.deepOrange,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          subtitle: Text(subtitle, style: const TextStyle(fontSize: 18)),
+        ),
+        const Divider(indent: 15, endIndent: 15),
+      ],
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+  }
+
+  void _showLogoutSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (_) => Container(
+        height: 200,
+        color: Colors.black87,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            const Text(
+              'Are you sure you want to Logout?',
+              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: logout,
+                style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
+                child: const Text('LOGOUT'),
+              ),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 18)),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void logout() {
     FirebaseAuth.instance.signOut();
     displaySnackBar('Logged out!');
-    Navigator.pop(context);
+    Navigator.popUntil(context, ModalRoute.withName('/'));
     Navigator.pushReplacementNamed(context, '/sign_in');
   }
 
-  String calculatePoints(int i) {
-    return "${100*i}";
+  void displaySnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(8),
+      ),
+    );
   }
+
+  String calculatePoints(int posts) => '${posts * 100}';
 }

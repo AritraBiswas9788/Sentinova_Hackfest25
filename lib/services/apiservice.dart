@@ -56,12 +56,12 @@ class ApiService {
     final url = Uri.parse('$baseUrl/events/addPost');
     print(jsonEncode({
       'info': post.toJson().toString(),
-      'eventId': eventID,
+      'eventId': "67f03774f1e87155ee26e619",
     }));
 
     final response = await http.post(
       url,
-      headers: {'Content-Type': 'application/json'},
+      // headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'info': post.toJson().toString(),
         'eventId': eventID,
@@ -70,7 +70,7 @@ class ApiService {
 
     print('STATUS: ${response.statusCode}');
     print('BODY: ${response.body}');
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       final decoded = jsonDecode(response.body);
       print(decoded);
     } else {
@@ -105,10 +105,11 @@ class ApiService {
 
   static Future<void> addUser(UserModel user) async {
     final url = Uri.parse('$baseUrl/users');
-    print(user.toJson().toString());
+    user.id = "any";
+    print(jsonEncode(user.toJson()));
     final response = await http.post(
       url,
-      body: user.toJson(),
+      body: jsonEncode(user.toJson()),
     );
 
     print('STATUS: ${response.statusCode}');
