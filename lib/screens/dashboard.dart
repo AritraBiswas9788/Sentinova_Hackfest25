@@ -41,7 +41,7 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     eventID = widget.event.id!;
-    blocks = generateBlockListFromEvent(widget.event);
+  //  blocks = generateBlockListFromEvent(widget.event);
     // Convert posts to SocialMediaPost
     eventPosts = widget.event.posts.map((post) {
       return SocialMediaPost(
@@ -82,7 +82,14 @@ class _DashboardState extends State<Dashboard> {
   }
 
 
-  List<Map<String, dynamic>> blocks = [];
+//  List<Map<String, dynamic>> blocks = [];
+  List<Map<String, dynamic>> blocks = [
+    {'id': 1, 'name': 'Tech Glitches', 'x1': 40.0, 'y1': 54.0, 'x2': 290.0, 'y2': 140.0},
+    {'id': 2, 'name': 'Platinum Block', 'x1': 40.0, 'y1': 140.0, 'x2': 290.0, 'y2': 215.0},
+    {'id': 3, 'name': 'Diamond Block', 'x1': 40.0, 'y1': 215.0, 'x2': 290.0, 'y2': 240.0},
+    {'id': 4, 'name': 'OverCrowding', 'x1': 50.0, 'y1': 240.0, 'x2': 270.0, 'y2': 280.0},
+  ];
+
   Map<String, dynamic>? selectedBlock;
 
   void _handleTap(TapUpDetails details) {
@@ -319,7 +326,7 @@ class _DashboardState extends State<Dashboard> {
                                                     child: Container(
                                                       width: selectedBlock!['x2'] - selectedBlock!['x1'],
                                                       height: selectedBlock!['y2'] - selectedBlock!['y1'],
-                                                      color: Colors.blue.withOpacity(0.5),
+                                                      color: (selectedBlock!['id']==2 || selectedBlock!['id']==3 )? Colors.blue.withOpacity(0.5) : Colors.red.withOpacity(0.5),
                                                       child: Center(
                                                         child: Text(
                                                           selectedBlock!['name'],
