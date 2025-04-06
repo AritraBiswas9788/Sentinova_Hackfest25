@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sentinova/helper/constant.dart';
 import 'package:sentinova/screens/sign_up.dart';
 
 import '../helper/data.dart';
@@ -28,22 +29,22 @@ class _SignInState extends State<SignIn> {
     // double ffem = fem * 0.97;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(10),
-          child: Image.asset('assets/ondc_icon.png'),
-          // child: const Text(
-          //   'ONDC',
-          //   style: TextStyle(
-          //       color: Colors.blue,
-          //       fontWeight: FontWeight.w500,
-          //       fontSize: 30),
-          // )
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.grey[850],
-      ),
+      // appBar: AppBar(
+      //   title: Container(
+      //     alignment: Alignment.center,
+      //     padding: const EdgeInsets.all(10),
+      //     child: Image.asset('assets/ondc_icon.png'),
+      //     // child: const Text(
+      //     //   'ONDC',
+      //     //   style: TextStyle(
+      //     //       color: Colors.blue,
+      //     //       fontWeight: FontWeight.w500,
+      //     //       fontSize: 30),
+      //     // )
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.grey[850],
+      // ),
       backgroundColor: Colors.grey[850],
       body: Padding(
           padding: const EdgeInsets.all(10),
@@ -209,7 +210,7 @@ class _SignInState extends State<SignIn> {
       Navigator.pop(context);
       displaySnackBar('Signed in successfully!');
 
-      currUser = UserModel(id: null, name: null, email: email, image: null, joined: DateTime.now(), posts: 0);
+      currUser = UserModel(id: null, name: null, email: email, image: DEFAULT_IMG, joined: DateTime.now(), posts: 0);
       ApiService.addUser(currUser!);
       Navigator.pop(context);
 

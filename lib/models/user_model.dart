@@ -38,6 +38,7 @@ class UserModel {
     'id': id,
     'name': name,
     'email': email,
+    'password': password,
     'image': image,
     'joined': joined.toIso8601String(),
     'posts': posts,

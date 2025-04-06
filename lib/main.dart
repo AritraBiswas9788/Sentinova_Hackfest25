@@ -19,7 +19,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   InitUser.initialize();
-  ApiService.addUser(currUser!);
+  // ApiService.addUser(currUser!);
   runApp(Sentinova());
 }
 
