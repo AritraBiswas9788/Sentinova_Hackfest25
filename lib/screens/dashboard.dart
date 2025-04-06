@@ -21,6 +21,7 @@ import '../components/twitter_card.dart';
 
 import '../models/event_model.dart';
 import '../models/social_media_post.dart';
+import '../widgets/side_bar.dart';
 
 class Dashboard extends StatefulWidget {
   final Event event;
@@ -140,7 +141,6 @@ class _DashboardState extends State<Dashboard> {
 
 
 
-
   @override
   Widget build(BuildContext context) {
     int tw = platformPostCounts['Twitter'] ?? 0;
@@ -171,26 +171,49 @@ class _DashboardState extends State<Dashboard> {
                       height: 70,
                       child: Row(
                         children: [
-                          Container(
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(7),
-                                    color: Colors.white.withOpacity(0.1),
-                                    border: Border.all(
-                                        color: Colors.white.withOpacity(0.2))),
-                                height: 50,
-                                width: 50,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.notifications_active_rounded,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                          // Container(
+                          //   child: Padding(
+                          //     padding: EdgeInsets.all(10),
+                          //     child: Container(
+                          //       decoration: BoxDecoration(
+                          //           borderRadius: BorderRadius.circular(7),
+                          //           color: Colors.white.withOpacity(0.1),
+                          //           border: Border.all(
+                          //               color: Colors.white.withOpacity(0.2))),
+                          //       height: 50,
+                          //       width: 50,
+                          //       child: Center(
+                          //         child: Icon(
+                          //           Icons.notifications_active_rounded,
+                          //           color: Colors.white,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (_) => NotificationSidebar(),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(7),
+                                color: Colors.white.withOpacity(0.1),
+                                border: Border.all(color: Colors.white.withOpacity(0.2)),
+                              ),
+                              height: 50,
+                              width: 50,
+                              child: Center(
+                                child: Icon(Icons.notifications_active_rounded, color: Colors.white),
                               ),
                             ),
                           ),
+
                           Expanded(
                               child: Padding(
                                 padding:
@@ -388,14 +411,14 @@ class _DashboardState extends State<Dashboard> {
                                         label: 'Overcrowding',
                                         icon: ImageIcon(AssetImage('assets/overcrowding.png',), color: Colors.white,), // You can customize per button
                                         onTap: () {
-                                          _showProblemDialog(context, 'Overcrowding', widget.event.id.toString());
+                                          _showProblemDialog(context, 'Overcrowding', widget.event.id.toString(),widget.event.mapUrl.toString());
                                         },
                                       ),
                                       IssueButton(
                                         label: 'Long lines',
                                         icon: ImageIcon(AssetImage('assets/queue.png',), color: Colors.white,), // You can customize per button
                                         onTap: () {
-                                          _showProblemDialog(context, 'Long lines', widget.event.id.toString());
+                                          _showProblemDialog(context, 'Long lines', widget.event.id.toString(),widget.event.mapUrl.toString());
                                         },
                                       ),
                                     ],
@@ -410,14 +433,14 @@ class _DashboardState extends State<Dashboard> {
                                         label: 'Food Issues',
                                         icon: ImageIcon(AssetImage('assets/foodproblems.png',), color: Colors.white,), // You can customize per button
                                         onTap: () {
-                                          _showProblemDialog(context, 'Food Issues', widget.event.id.toString());
+                                          _showProblemDialog(context, 'Food Issues', widget.event.id.toString(),widget.event.mapUrl.toString());
                                         },
                                       ),
                                       IssueButton(
                                         label: 'Speaker issues',
                                         icon: ImageIcon(AssetImage('assets/speakerissue.png',), color: Colors.white,), // You can customize per button
                                         onTap: () {
-                                          _showProblemDialog(context, 'Speaker issues', widget.event.id.toString());
+                                          _showProblemDialog(context, 'Speaker issues', widget.event.id.toString(),widget.event.mapUrl.toString());
                                         },
                                       ),
                                     ],
@@ -432,14 +455,14 @@ class _DashboardState extends State<Dashboard> {
                                         label: 'Tech Glitches',
                                         icon: ImageIcon(AssetImage('assets/marketing.png',), color: Colors.white,), // You can customize per button
                                         onTap: () {
-                                          _showProblemDialog(context, 'Tech Glitches', widget.event.id.toString());
+                                          _showProblemDialog(context, 'Tech Glitches', widget.event.id.toString(),widget.event.mapUrl.toString());
                                         },
                                       ),
                                       IssueButton(
                                         label: 'Other...',
                                         icon: Icon(Icons.circle, color: Colors.white,) ,// You can customize per button
                                         onTap: () {
-                                          _showProblemDialog(context, 'Others', widget.event.id.toString());
+                                          _showProblemDialog(context, 'Others', widget.event.id.toString(),widget.event.mapUrl.toString());
                                         },
                                       ),
                                     ],
@@ -574,9 +597,22 @@ class _DashboardState extends State<Dashboard> {
 );
 }
 
-  void _showProblemDialog(BuildContext context, String selectedProblem, String eventId) {
-    TextEditingController seatController = TextEditingController();
+
+  void _showProblemDialog(
+      BuildContext context,
+      String selectedProblem,
+      String eventId,
+      String mapUrl,
+      ) {
     TextEditingController problemController = TextEditingController();
+    Map<String, dynamic>? selectedBlock;
+
+    List<Map<String, dynamic>> blocks = [
+      {'id': 1, 'name': 'Gold Block', 'x1': 40.0, 'y1': 54.0, 'x2': 290.0, 'y2': 140.0},
+      {'id': 2, 'name': 'Platinum Block', 'x1': 40.0, 'y1': 140.0, 'x2': 290.0, 'y2': 215.0},
+      {'id': 3, 'name': 'Diamond Block', 'x1': 40.0, 'y1': 215.0, 'x2': 290.0, 'y2': 240.0},
+      {'id': 4, 'name': 'Fanpit', 'x1': 50.0, 'y1': 240.0, 'x2': 270.0, 'y2': 280.0},
+    ];
 
     if (selectedProblem != "Others") {
       problemController.text = selectedProblem;
@@ -587,50 +623,57 @@ class _DashboardState extends State<Dashboard> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            bool isButtonEnabled = seatController.text.isNotEmpty && problemController.text.isNotEmpty;
             bool _isSubmitting = false;
 
+            void _handleTap(TapUpDetails details) {
+              final tapX = details.localPosition.dx;
+              final tapY = details.localPosition.dy;
+
+              for (var block in blocks) {
+                if (tapX >= block['x1'] &&
+                    tapX <= block['x2'] &&
+                    tapY >= block['y1'] &&
+                    tapY <= block['y2']) {
+                  setState(() {
+                    selectedBlock = block;
+                  });
+                  return;
+                }
+              }
+
+              setState(() {
+                selectedBlock = null;
+              });
+            }
+
             Future<void> submitIssue() async {
+              if (selectedBlock == null || problemController.text.isEmpty) return;
+
               setState(() {
                 _isSubmitting = true;
               });
 
               final url = Uri.parse('https://hackfest-backend-xrix.onrender.com/api/event/problem');
-              // final response = await http.post(
-              //   url,
-              //   headers: {'Content-Type': 'application/json'},
-              //   body: jsonEncode({
-              //     'data': int.tryParse(seatController.text),
-              //     'eventId': eventId,
-              //   }),
-              // );
+
+              final body = {
+                'data': {
+                  'name': selectedBlock!['id'],
+                  'issue': problemController.text,
+                },
+                'eventId': eventId,
+              };
+
               final response = await http.post(
                 url,
                 headers: {'Content-Type': 'application/json'},
-                body: jsonEncode({
-                  'data': {
-                    'name': int.tryParse(seatController.text),
-                    'issue': problemController.text,
-
-                  },
-                  'eventId': eventId,
-                }),
+                body: jsonEncode(body),
               );
-              print(jsonEncode({
-                'data': {
-                  'name': int.tryParse(seatController.text),
-                  'issue': problemController.text,
 
-                },
-                'eventId': eventId,
-              }));
-              Navigator.pop(context); // Close the dialog
-              print('STATUS: ${response.statusCode}');
-              print('BODY: ${response.body}');
+              Navigator.pop(context);
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-
                     (response.statusCode == 200 || response.statusCode == 201)
                         ? "Issue Submitted Successfully!"
                         : "Failed to submit issue. Try again.",
@@ -639,66 +682,216 @@ class _DashboardState extends State<Dashboard> {
               );
             }
 
-            return StatefulBuilder(
-              builder: (context, setState) {
-                return AlertDialog(
-                  title: Text("Report Issue"),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextField(
-                          controller: seatController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: "Seat Number",
-                            labelStyle: TextStyle(color: Colors.grey),
-                            border: OutlineInputBorder(),
+            return AlertDialog(
+              title: Text("Report Issue"),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTapUp: _handleTap,
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 300,
+                            height: 300,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                            ),
+                            child: Image.network(mapUrl, fit: BoxFit.cover),
                           ),
-                          onChanged: (_) => setState(() {}),
-                        ),
-                        SizedBox(height: 10),
-                        TextField(
-                          controller: problemController,
-                          decoration: InputDecoration(
-                            labelText: "Problem Description",
-                            labelStyle: TextStyle(color: Colors.grey),
-                            border: OutlineInputBorder(),
-                          ),
-                          maxLines: 3,
-                          onChanged: (_) => setState(() {}),
-                        ),
-                      ],
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text("Cancel"),
-                    ),
-                    _isSubmitting
-                        ? Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                          if (selectedBlock != null)
+                            Positioned(
+                              left: selectedBlock!['x1'],
+                              top: selectedBlock!['y1'],
+                              child: Container(
+                                width: selectedBlock!['x2'] - selectedBlock!['x1'],
+                                height: selectedBlock!['y2'] - selectedBlock!['y1'],
+                                color: Colors.blue.withOpacity(0.5),
+                                child: Center(
+                                  child: Text(
+                                    selectedBlock!['name'],
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                    )
-                        : ElevatedButton(
-                      onPressed: seatController.text.isNotEmpty && problemController.text.isNotEmpty
-                          ? () => submitIssue()
-                          : null,
-                      child: Text("Submit"),
+                    ),
+                    SizedBox(height: 10),
+                    if (selectedBlock != null)
+                      Text(
+                        'Selected Block: ${selectedBlock!['name']}',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: problemController,
+                      decoration: InputDecoration(
+                        labelText: "Problem Description",
+                        border: OutlineInputBorder(),
+                      ),
+                      maxLines: 3,
+                      onChanged: (_) => setState(() {}),
                     ),
                   ],
-                );
-              },
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancel"),
+                ),
+                _isSubmitting
+                    ? SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+                    : ElevatedButton(
+                  onPressed: selectedBlock != null &&
+                      problemController.text.isNotEmpty
+                      ? submitIssue
+                      : null,
+                  child: Text("Submit"),
+                ),
+              ],
             );
           },
         );
       },
     );
   }
+
+  // void _showProblemDialog(BuildContext context, String selectedProblem, String eventId) {
+  //   TextEditingController seatController = TextEditingController();
+  //   TextEditingController problemController = TextEditingController();
+  //
+  //   if (selectedProblem != "Others") {
+  //     problemController.text = selectedProblem;
+  //   }
+  //
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return StatefulBuilder(
+  //         builder: (context, setState) {
+  //           bool isButtonEnabled = seatController.text.isNotEmpty && problemController.text.isNotEmpty;
+  //           bool _isSubmitting = false;
+  //
+  //           Future<void> submitIssue() async {
+  //             setState(() {
+  //               _isSubmitting = true;
+  //             });
+  //
+  //             final url = Uri.parse('https://hackfest-backend-xrix.onrender.com/api/event/problem');
+  //             // final response = await http.post(
+  //             //   url,
+  //             //   headers: {'Content-Type': 'application/json'},
+  //             //   body: jsonEncode({
+  //             //     'data': int.tryParse(seatController.text),
+  //             //     'eventId': eventId,
+  //             //   }),
+  //             // );
+  //             final response = await http.post(
+  //               url,
+  //               headers: {'Content-Type': 'application/json'},
+  //               body: jsonEncode({
+  //                 'data': {
+  //                   'name': int.tryParse(seatController.text),
+  //                   'issue': problemController.text,
+  //
+  //                 },
+  //                 'eventId': eventId,
+  //               }),
+  //             );
+  //             print(jsonEncode({
+  //               'data': {
+  //                 'name': int.tryParse(seatController.text),
+  //                 'issue': problemController.text,
+  //
+  //               },
+  //               'eventId': eventId,
+  //             }));
+  //             Navigator.pop(context); // Close the dialog
+  //             print('STATUS: ${response.statusCode}');
+  //             print('BODY: ${response.body}');
+  //             ScaffoldMessenger.of(context).showSnackBar(
+  //               SnackBar(
+  //                 content: Text(
+  //
+  //                   (response.statusCode == 200 || response.statusCode == 201)
+  //                       ? "Issue Submitted Successfully!"
+  //                       : "Failed to submit issue. Try again.",
+  //                 ),
+  //               ),
+  //             );
+  //           }
+  //
+  //           return StatefulBuilder(
+  //             builder: (context, setState) {
+  //               return AlertDialog(
+  //                 title: Text("Report Issue"),
+  //                 content: SingleChildScrollView(
+  //                   child: Column(
+  //                     mainAxisSize: MainAxisSize.min,
+  //                     children: [
+  //                       TextField(
+  //                         controller: seatController,
+  //                         keyboardType: TextInputType.number,
+  //                         decoration: InputDecoration(
+  //                           labelText: "Seat Number",
+  //                           labelStyle: TextStyle(color: Colors.grey),
+  //                           border: OutlineInputBorder(),
+  //                         ),
+  //                         onChanged: (_) => setState(() {}),
+  //                       ),
+  //                       SizedBox(height: 10),
+  //                       TextField(
+  //                         controller: problemController,
+  //                         decoration: InputDecoration(
+  //                           labelText: "Problem Description",
+  //                           labelStyle: TextStyle(color: Colors.grey),
+  //                           border: OutlineInputBorder(),
+  //                         ),
+  //                         maxLines: 3,
+  //                         onChanged: (_) => setState(() {}),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 actions: [
+  //                   TextButton(
+  //                     onPressed: () => Navigator.pop(context),
+  //                     child: Text("Cancel"),
+  //                   ),
+  //                   _isSubmitting
+  //                       ? Padding(
+  //                     padding: const EdgeInsets.symmetric(horizontal: 20),
+  //                     child: SizedBox(
+  //                       width: 24,
+  //                       height: 24,
+  //                       child: CircularProgressIndicator(strokeWidth: 2),
+  //                     ),
+  //                   )
+  //                       : ElevatedButton(
+  //                     onPressed: seatController.text.isNotEmpty && problemController.text.isNotEmpty
+  //                         ? () => submitIssue()
+  //                         : null,
+  //                     child: Text("Submit"),
+  //                   ),
+  //                 ],
+  //               );
+  //             },
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
 }
