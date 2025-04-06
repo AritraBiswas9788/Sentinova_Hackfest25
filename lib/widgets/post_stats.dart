@@ -47,7 +47,7 @@ class _ShowStat extends StatelessWidget {
           padding: const EdgeInsets.only(right: 2.0),
           child: Icon(icon, color: color),
         ),
-        Text(number.toString()),
+        Text(number.toString(), style: TextStyle(color: Colors.white),),
       ],
     );
   }

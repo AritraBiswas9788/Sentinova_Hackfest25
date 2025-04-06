@@ -1,8 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:sentinova/helper/init_user.dart';
+import 'package:sentinova/screens/chatbot.dart';
 import 'package:sentinova/screens/community_screen.dart';
 import 'package:sentinova/screens/splash_screen.dart';
 import 'package:sentinova/themes.dart';
@@ -47,6 +49,9 @@ class Sentinova extends StatelessWidget {
   // }
   @override
   Widget build(BuildContext context) {
+
+    Get.put(GeminiController());
+
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: '/',

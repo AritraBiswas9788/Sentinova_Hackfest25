@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sentinova/helper/data.dart';
 import 'package:sentinova/screens/community_screen.dart';
+import 'package:sentinova/screens/profile_screen.dart';
 
 
 import '../components/cards_row.dart';
@@ -202,25 +203,33 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                 ),
                               )),
-                          Container(
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(7),
-                                    color: Colors.white.withOpacity(0.1),
-                                    border: Border.all(
-                                        color: Colors.white.withOpacity(0.2))),
-                                height: 50,
-                                width: 50,
-                                child: Center(
-                                  child: Icon(
-                                    Icons.person_2_rounded,
-                                    color: Colors.white,
+                          GestureDetector(
+                            child: Container(
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(7),
+                                      color: Colors.white.withOpacity(0.1),
+                                      border: Border.all(
+                                          color: Colors.white.withOpacity(0.2))),
+                                  height: 50,
+                                  width: 50,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.person_2_rounded,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
+                            onTap: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const Profile()),
+                              );
+                            },
                           ),
                         ],
                       ),

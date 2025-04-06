@@ -11,4 +11,4 @@ UserModel? currUser = UserModel(
   posts: 14,
 );
 
-String eventID = "NAC";
+String eventID = "67f03774f1e87155ee26e619";
