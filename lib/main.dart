@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:sentinova/helper/data.dart';
 import 'package:sentinova/helper/init_user.dart';
 import 'package:sentinova/screens/community_screen.dart';
+import 'package:sentinova/screens/profile_screen.dart';
+import 'package:sentinova/services/apiservice.dart';
 import 'package:sentinova/themes.dart';
 
 //firebase
@@ -16,6 +19,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   InitUser.initialize();
+  ApiService.addUser(currUser!);
   runApp(Sentinova());
 }
 
