@@ -73,9 +73,12 @@ class Event {
       posts: json["posts"] == null
           ? []
           : List<Post>.from(json["posts"].map((x) => Post.fromJson(x))),
+
       communityPosts: json["communityPosts"] == null
           ? []
-          : List<PostModel>.from(json["communityPosts"].map((x) => PostModel(
+          : List<PostModel>.from(json["communityPosts"]
+          .where((x) => x["author"] != null)
+          .map((x) => PostModel(
         id: x["id"],
         title: x["title"],
         summary: x["summary"],
@@ -97,6 +100,32 @@ class Event {
             ? []
             : List<String>.from(x["votedUids"]),
       ))),
+
+
+      // communityPosts: json["communityPosts"] == null
+      //     ? []
+      //     : List<PostModel>.from(json["communityPosts"].map((x) => PostModel(
+      //   id: x["id"],
+      //   title: x["title"],
+      //   summary: x["summary"],
+      //   body: x["body"],
+      //   imageURL: x["imageURL"],
+      //   author: UserModel.fromJson(x["author"]),
+      //   postTime: DateTime.tryParse(x["postTime"]) ?? DateTime.now(),
+      //   reacts: x["reacts"],
+      //   views: x["views"],
+      //   comments: [], // Populate if comment data exists
+      //   isPoll: x["isPoll"] ?? false,
+      //   options: x["options"] == null
+      //       ? []
+      //       : List<PollOption>.from(x["options"].map((o) => PollOption(
+      //     text: o["text"],
+      //     votes: o["votes"],
+      //   ))),
+      //   votedUids: x["votedUids"] == null
+      //       ? []
+      //       : List<String>.from(x["votedUids"]),
+      // ))),
     );
   }
 
@@ -345,8 +374,8 @@ class Dimen {
 
   factory Dimen.fromJson(Map<String, dynamic> json) {
     return Dimen(
-      x: json["x"],
-      y: json["y"],
+      x: (json["x"] as num?)?.toDouble(),
+      y: (json["y"] as num?)?.toDouble(),
     );
   }
 
@@ -390,7 +419,7 @@ class Post {
       username: json["username"],
       text: json["text"],
       timestamp: json["timestamp"],
-      likes: json["likes"],
+      likes: (json["likes"] as num?)?.toDouble(),
       comments: json["comments"],
       shares: json["shares"],
       url: json["url"],
