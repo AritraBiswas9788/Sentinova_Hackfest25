@@ -104,6 +104,7 @@ class _PostTitleSummaryAndTime extends StatelessWidget {
                         fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Text(summary,
+                    maxLines: 2,
                     style: const TextStyle(color: Colors.white70)),
               ],
             ),
@@ -125,7 +126,7 @@ class _PostImage extends StatelessWidget {
       flex: 2,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
-        child: Image.asset(postData.imageURL, fit: BoxFit.cover),
+        child: Image.network(postData.imageURL, fit: BoxFit.cover),
       ),
     );
   }

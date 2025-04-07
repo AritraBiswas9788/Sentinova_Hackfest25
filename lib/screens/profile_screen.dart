@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:sentinova/screens/sign_in.dart';
 
 import '../helper/constant.dart';
@@ -20,9 +21,7 @@ class _ProfileState extends State<Profile> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
     if (FirebaseAuth.instance.currentUser == null) {
-      // delay to ensure navigation doesn't throw context errors
       Future.microtask(() {
         Navigator.pushReplacement(
           context,
@@ -44,135 +43,189 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     final userEmail = FirebaseAuth.instance.currentUser?.email ?? 'N/A';
+    final posts = 17;
+    final points =  1100;
+    final goal = 2000;
+    final remaining = goal - points;
+    final percent = (points / goal).clamp(0.0, 1.0);
 
     return !isFetched
         ? const LoadingWidget()
         : Scaffold(
+      backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
-        backgroundColor: Colors.grey[850],
-        title: const Center(
-          child: Text(
-            'Profile',
-            style: TextStyle(color: Colors.white),
-          ),
+        backgroundColor: const Color(0xFF1E1E1E),
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Profile',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.grey, Colors.grey.shade700],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                stops: const [0.5, 0.9],
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: RadialGradient(
+            center: Alignment(0.2, -0.5), // Adjust for an offset effect
+            radius: 1.5, // Adjust the spread
+            colors: [
+              Color(0xFF190B34), // Purple
+              Color(0xFF0A0A0E), // Dark Purple / Black
+            ],
+            stops: [0.3, 1.0], // Control how colors blend
+          ),
+        ),
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          children: [
+            Column(
+              children: [
                 CircleAvatar(
-                  backgroundColor: Colors.white70,
-                  minRadius: 60.0,
+                  radius: 52,
+                  backgroundColor: Colors.grey[700],
                   child: CircleAvatar(
-                    radius: 50.0,
+                    radius: 48,
                     backgroundImage: NetworkImage(currUser?.image ?? DEFAULT_IMG),
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 16),
                 Text(
                   currUser?.name ?? 'No Name',
                   style: const TextStyle(
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amberAccent,
+                    fontSize: 24,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                const SizedBox(height: 4),
                 Text(
                   userEmail,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.amberAccent,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey.shade400,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-                // const Text(
-                //   'Ondc Merchant',
-                //   style: TextStyle(
-                //     color: Colors.white,
-                //     fontWeight: FontWeight.bold,
-                //     fontSize: 20,
-                //   ),
-                // ),
               ],
             ),
-          ),
-          Column(
-            children: <Widget>[
-              _buildInfoTile("Email ID", currUser?.email ?? "Not available"),
-              _buildInfoTile("Posts", (currUser?.posts ?? 0).toString()),
-              _buildInfoTile("Reward points", calculatePoints(currUser?.posts ?? 0)),
-              Center(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 40),
-                  child: TextButton.icon(
-                    onPressed: _showLogoutSheet,
-                    icon: const Icon(Icons.logout),
-                    label: const Text('Logout', style: TextStyle(fontSize: 18)),
-                  ),
+
+            const SizedBox(height: 30),
+
+            CircularPercentIndicator(
+              radius: 70,
+              lineWidth: 8,
+              percent: percent,
+              center: Text(
+                "$points pts",
+                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              backgroundColor: Colors.grey.shade800,
+              progressColor: Colors.deepOrangeAccent,
+              animation: true,
+              animationDuration: 800,
+            ),
+
+            const SizedBox(height: 16),
+            Center(
+              child: Text(
+                "$remaining points to next level",
+                style: TextStyle(
+                  color: Colors.grey.shade300,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 4),
+            Center(
+              child: Text(
+                "🎉 Reward: 20% OFF Coupon",
+                style: TextStyle(
+                  color: Colors.greenAccent.shade200,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            _buildInfoTile("Email ID", userEmail ?? "Not available"),
+            _buildInfoTile("Posts", posts.toString()),
+            _buildInfoTile("Reward Points", "$points"),
+
+            const SizedBox(height: 30),
+
+            Center(
+              child: ElevatedButton.icon(
+                onPressed: _showLogoutSheet,
+                icon: const Icon(Icons.logout),
+                label: const Text('Logout'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade600,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildInfoTile(String title, String subtitle) {
-    return Column(
-      children: [
-        ListTile(
-          title: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.deepOrange,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: ListTile(
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
           ),
-          subtitle: Text(subtitle, style: const TextStyle(fontSize: 18)),
         ),
-        const Divider(indent: 15, endIndent: 15),
-      ],
+        subtitle: Text(
+          subtitle,
+          style: TextStyle(
+            color: Colors.grey.shade400,
+            fontSize: 14,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+      ),
     );
   }
 
   void _showLogoutSheet() {
     showModalBottomSheet<void>(
       context: context,
+      backgroundColor: const Color(0xFF1E1E1E),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (_) => Container(
+        padding: const EdgeInsets.all(20),
         height: 200,
-        color: Colors.black87,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             const Text(
               'Are you sure you want to Logout?',
-              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
             ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: logout,
-                style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16)),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 child: const Text('LOGOUT'),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel', style: TextStyle(color: Colors.white, fontSize: 18)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -197,6 +250,4 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
-  String calculatePoints(int posts) => '${posts * 100}';
 }

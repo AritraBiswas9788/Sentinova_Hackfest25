@@ -19,7 +19,7 @@ class PostTimeStamp extends StatelessWidget {
     return Container(
       width: double.infinity,
       alignment: alignment,
-      child: Text(postData.postTimeFormatted, style: timeTheme),
+      child: Text(postData.postTimeFormatted, style: TextStyle(color: Colors.black, fontStyle: FontStyle.italic)),
     );
   }
 }

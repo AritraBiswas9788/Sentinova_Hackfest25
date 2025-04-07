@@ -211,6 +211,7 @@ class _SignInState extends State<SignIn> {
       displaySnackBar('Signed in successfully!');
 
       currUser = UserModel(id: null, name: null, email: email, password: pass, image: DEFAULT_IMG, joined: DateTime.now(), posts: 0);
+      print(currUser?.toJson());
       ApiService.addUser(currUser!);
       Navigator.pop(context);
 

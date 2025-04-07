@@ -38,6 +38,7 @@ class Event {
     required this.analysis,
     required this.posts,
     required this.communityPosts,
+    required this.alerts,
   });
 
   final String? id;
@@ -53,6 +54,7 @@ class Event {
   final Analysis? analysis;
   final List<Post> posts;
   final List<PostModel> communityPosts;
+  final List<String> alerts;
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(
@@ -68,64 +70,40 @@ class Event {
       createdAt: DateTime.tryParse(json["createdAt"] ?? ""),
       updatedAt: DateTime.tryParse(json["updatedAt"] ?? ""),
       v: json["__v"],
-      analysis:
-      json["analysis"] == null ? null : Analysis.fromJson(json["analysis"]),
+      analysis: json["analysis"] == null ? null : Analysis.fromJson(json["analysis"]),
       posts: json["posts"] == null
           ? []
           : List<Post>.from(json["posts"].map((x) => Post.fromJson(x))),
-
       communityPosts: json["communityPosts"] == null
           ? []
-          : List<PostModel>.from(json["communityPosts"]
-          .where((x) => x["author"] != null)
-          .map((x) => PostModel(
-        id: x["id"],
-        title: x["title"],
-        summary: x["summary"],
-        body: x["body"],
-        imageURL: x["imageURL"],
-        author: UserModel.fromJson(x["author"]),
-        postTime: DateTime.tryParse(x["postTime"]) ?? DateTime.now(),
-        reacts: x["reacts"],
-        views: x["views"],
-        comments: [], // Populate if comment data exists
-        isPoll: x["isPoll"] ?? false,
-        options: x["options"] == null
-            ? []
-            : List<PollOption>.from(x["options"].map((o) => PollOption(
-          text: o["text"],
-          votes: o["votes"],
-        ))),
-        votedUids: x["votedUids"] == null
-            ? []
-            : List<String>.from(x["votedUids"]),
-      ))),
-
-
-      // communityPosts: json["communityPosts"] == null
-      //     ? []
-      //     : List<PostModel>.from(json["communityPosts"].map((x) => PostModel(
-      //   id: x["id"],
-      //   title: x["title"],
-      //   summary: x["summary"],
-      //   body: x["body"],
-      //   imageURL: x["imageURL"],
-      //   author: UserModel.fromJson(x["author"]),
-      //   postTime: DateTime.tryParse(x["postTime"]) ?? DateTime.now(),
-      //   reacts: x["reacts"],
-      //   views: x["views"],
-      //   comments: [], // Populate if comment data exists
-      //   isPoll: x["isPoll"] ?? false,
-      //   options: x["options"] == null
-      //       ? []
-      //       : List<PollOption>.from(x["options"].map((o) => PollOption(
-      //     text: o["text"],
-      //     votes: o["votes"],
-      //   ))),
-      //   votedUids: x["votedUids"] == null
-      //       ? []
-      //       : List<String>.from(x["votedUids"]),
-      // ))),
+          : List<PostModel>.from(
+        json["communityPosts"]
+            .where((x) => x["author"] != null)
+            .map((x) => PostModel(
+          id: x["id"],
+          title: x["title"],
+          summary: x["summary"],
+          body: x["body"],
+          imageURL: x["imageURL"],
+          author: UserModel.fromJson(x["author"]),
+          postTime: DateTime.tryParse(x["postTime"] ?? "") ?? DateTime.now(),
+          reacts: x["reacts"] ?? 0,
+          views: x["views"] ?? 0,
+          comments: [], // Populate if available
+          isPoll: x["isPoll"] ?? false,
+          options: x["options"] == null
+              ? []
+              : List<PollOption>.from(
+              x["options"].map((o) => PollOption(
+                text: o["text"],
+                votes: o["votes"],
+              ))),
+          votedUids: x["votedUids"] == null
+              ? []
+              : List<String>.from(x["votedUids"]),
+        )),
+      ),
+      alerts: json["alerts"] == null ? [] : List<String>.from(json["alerts"]),
     );
   }
 
@@ -144,9 +122,11 @@ class Event {
       "analysis": analysis?.toJson(),
       "posts": posts.map((p) => p.toJson()).toList(),
       "communityPosts": communityPosts.map((p) => p.toJson()).toList(),
+      "alerts": alerts,
     };
   }
 }
+
 
 class Analysis {
   Analysis({

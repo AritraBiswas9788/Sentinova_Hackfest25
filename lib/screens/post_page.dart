@@ -23,12 +23,17 @@ class PostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(postData.title)),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Text(postData.title),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+      ),
       body: InheritedPostModel(
         postData: postData,
         child: ListView(
           key: PostPageKeys.wholePage,
-          children: <Widget>[
+          children: const <Widget>[
             _BannerImage(key: PostPageKeys.bannerImage),
             _NonImageContents(),
           ],
@@ -50,16 +55,14 @@ class _NonImageContents extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _Summary(key: PostPageKeys.summary),
-          PostTimeStamp(),
-          _MainBody(key: PostPageKeys.mainBody),
-          UserDetails(
-            userData: postData.author,
-          ),
-          SizedBox(height: 8.0),
-          PostStats(),
-          SizedBox(height: 16),
-          CommentsList(),
+          const _Summary(key: PostPageKeys.summary),
+          const PostTimeStamp(),
+          const _MainBody(key: PostPageKeys.mainBody),
+          UserDetails(userData: postData.author),
+          const SizedBox(height: 8.0),
+          const PostStats(),
+          const SizedBox(height: 16),
+          const CommentsList(),
         ],
       ),
     );
@@ -71,11 +74,9 @@ class _BannerImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Image.asset(
-        InheritedPostModel.of(context).postData.imageURL,
-        fit: BoxFit.fitWidth,
-      ),
+    return Image.network(
+      InheritedPostModel.of(context).postData.imageURL,
+      fit: BoxFit.fitWidth,
     );
   }
 }
@@ -85,11 +86,13 @@ class _Summary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).textTheme.titleLarge?.color;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Text(
         InheritedPostModel.of(context).postData.summary,
-        style: TextThemes.title,
+        style: TextThemes.title.copyWith(color: color),
       ),
     );
   }
@@ -100,11 +103,13 @@ class _MainBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = Theme.of(context).textTheme.bodyMedium?.color;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Text(
         InheritedPostModel.of(context).postData.body,
-        style: TextThemes.body1,
+        style: TextThemes.body1.copyWith(color: color),
       ),
     );
   }

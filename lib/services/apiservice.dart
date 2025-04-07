@@ -14,9 +14,9 @@ class ApiService {
     // print("started fetching");
     final url = Uri.parse('$baseUrl/users');
     final response = await http.get(url);
-    // print("nooo");
-    // print('STATUS: ${response.statusCode}');
-    // print('BODY: ${response.body}');
+    print("nooo");
+    print('STATUS: ${response.statusCode}');
+    print('BODY: ${response.body}');
     if (response.statusCode == 200) {
       final decoded = jsonDecode(response.body);
       return UserList.fromJson(decoded).users;
@@ -42,7 +42,6 @@ class ApiService {
 
   static Future<List<PostModel>> fetchPosts() async {
     return DemoValues.posts;
-
     Events events = await fetchEvents();
     for (Event event in events.events) {
       if (event.id == eventID) {
@@ -120,6 +119,17 @@ class ApiService {
     } else {
       throw Exception('Failed to add user');
     }
+  }
+
+  static Future<List<String>> fetchAlerts() async {
+    final events = await fetchEvents();
+
+    for (Event event in events.events) {
+      if (event.id == eventID) {
+        return event.alerts;
+      }
+    }
+    return [];
   }
 
 

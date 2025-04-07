@@ -12,7 +12,7 @@ class ShareRow extends StatelessWidget {
       List<String> hashtags = const [],
     }) async {
       final tagString =
-          hashtags.map((tag) => tag.startsWith('#') ? tag : '#$tag').join(' ');
+      hashtags.map((tag) => tag.startsWith('#') ? tag : '#$tag').join(' ');
       final fullMessage = '$message\n\n$tagString';
 
       Uri? url;
@@ -40,8 +40,8 @@ class ShareRow extends StatelessWidget {
           );
           break;
         case 'instagram':
-          // Instagram doesn't support text-based web sharing. Only images/videos can be shared.
-          // You can open the Instagram app (if installed)
+        // Instagram doesn't support text-based web sharing. Only images/videos can be shared.
+        // You can open the Instagram app (if installed)
           final instagramUri = Uri.parse('instagram://app');
           if (await canLaunchUrl(instagramUri)) {
             await launchUrl(instagramUri);
@@ -68,12 +68,12 @@ class ShareRow extends StatelessWidget {
     Future<void> openInstagramApp() async {
       final Uri instagramUri = Uri.parse('instagram://app');
 
-      if (await canLaunchUrl(instagramUri)) {
+      if (false) {
         await launchUrl(instagramUri, mode: LaunchMode.externalApplication);
       } else {
         // Optionally fall back to the Instagram website
         final Uri fallbackUrl = Uri.parse('https://www.instagram.com/');
-        if (await canLaunchUrl(fallbackUrl)) {
+        if (true) {
           await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
         } else {
           print('Could not open Instagram.');
@@ -89,17 +89,9 @@ class ShareRow extends StatelessWidget {
 
           await shareToSocialMedia(
             platform: 'facebook',
-            message: 'Check out this cool thing!',
-            hashtags: ['Flutter', 'Dart'],
+            message: 'Excited to be part of Google Summer of Code! 🌟',
+            hashtags: ['GSoC', 'GoogleSummerOfCode', 'OpenSource', 'FOSS', 'GSoC2025'],
           );
-
-          // try{
-          //   final response = await flutterShareMe.shareToFacebook(
-          //       url: "https://pub.dev/packages/flutter_share_me", msg: "msg").timeout(Duration(seconds: 5));
-          // }catch(e)
-          // {
-          //   print(e);
-          // }
         }
       },
       {
@@ -107,24 +99,24 @@ class ShareRow extends StatelessWidget {
         'onTap': () async {
           await shareToSocialMedia(
             platform: 'twitter',
-            message: 'Check out this cool thing!',
-            hashtags: ['Flutter', 'Dart'],
+            message: 'Kicking off my Google Summer of Code journey! 🚀',
+            hashtags: ['GSoC', 'GSoC2025', 'OpenSource', 'GoogleSummerOfCode', 'DevJourney'],
           );
         }
       },
       {
         'path': 'assets/instagram_share.png',
-        'onTap': ()async{
+        'onTap': () async {
           openInstagramApp();
         }
       },
       {
         'path': 'assets/linkedin_share.png',
-        'onTap': ()async{
+        'onTap': () async {
           await shareToSocialMedia(
             platform: 'linkedin',
-            message: 'Check out this cool thing!',
-            hashtags: ['Flutter', 'Dart'],
+            message: 'Thrilled to be working on an open-source project this summer through Google Summer of Code! 💻',
+            hashtags: ['GSoC2025', 'GoogleSummerOfCode', 'OpenSource', 'FOSS', 'StudentDeveloper'],
           );
         }
       },
@@ -133,12 +125,13 @@ class ShareRow extends StatelessWidget {
         'onTap': () async {
           await shareToSocialMedia(
             platform: 'reddit',
-            message: 'Check out this cool thing!',
-            hashtags: ['Flutter', 'Dart'],
+            message: 'Starting my GSoC journey with open-source contributions! Let’s go! 🔧',
+            hashtags: ['GSoC', 'OpenSource', 'GSoC2025', 'GoogleSummerOfCode', 'CodingSummer'],
           );
         }
       },
     ];
+
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -187,12 +180,12 @@ class _GlowingShareIconState extends State<GlowingShareIcon> {
           shape: BoxShape.circle,
           boxShadow: _isTapped
               ? [
-                  BoxShadow(
-                    color: Colors.white.withOpacity(0.7),
-                    blurRadius: 20,
-                    spreadRadius: 5,
-                  ),
-                ]
+            BoxShadow(
+              color: Colors.white.withOpacity(0.7),
+              blurRadius: 20,
+              spreadRadius: 5,
+            ),
+          ]
               : [],
         ),
         child: AnimatedScale(

@@ -1,13 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:sentinova/services/apiservice.dart';
 
-class NotificationSidebar extends StatelessWidget {
-  final List<String> alerts = [
-    "🎤 Live Performance at 7 PM!",
-    "📢 Workshop on AI starts in 30 mins",
-    "🏆 Coding Contest winners announced!",
-    "🎁 Collect your goodies from Booth 3"
-  ];
+class NotificationSidebar extends StatefulWidget {
+  @override
+  _NotificationSidebarState createState() => _NotificationSidebarState();
+}
+
+class _NotificationSidebarState extends State<NotificationSidebar> {
+  // List<String> alerts = [
+  //   "🎤 Live Performance at 7 PM!",
+  //   "📢 Workshop on AI starts in 30 mins",
+  //   "🏆 Coding Contest winners announced!",
+  //   "🎁 Collect your goodies from Booth 3"
+  // ];
+  List<String> alerts = [];
+
+  Future<void> fetchAlerts() async {
+    alerts = await ApiService.fetchAlerts();
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchAlerts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +51,7 @@ class NotificationSidebar extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: Column(
               children: [
-                SizedBox(height: 20,),
+                SizedBox(height: 20),
                 Row(
                   children: [
                     Icon(Icons.notifications, color: Colors.white),
@@ -44,6 +65,11 @@ class NotificationSidebar extends StatelessWidget {
                       ),
                     ),
                     Spacer(),
+                    IconButton(
+                      icon: Icon(Icons.refresh, color: Colors.white),
+                      onPressed: fetchAlerts,
+                      tooltip: 'Refresh Alerts',
+                    ),
                     IconButton(
                       icon: Icon(Icons.close, color: Colors.white),
                       onPressed: () => Navigator.pop(context),

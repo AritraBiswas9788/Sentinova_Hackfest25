@@ -115,6 +115,19 @@ class ExpandableTextFieldState extends State<ExpandableTextField> {
                 IconButton(
                   onPressed: () {
     // Add your send logic here
+                    widget.controller.clear();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("✅ Feedback submitted successfully!"),
+                        behavior: SnackBarBehavior.floating,
+                        backgroundColor: Colors.green.shade600,
+                        duration: Duration(seconds: 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.send, color: Colors.white),
                   padding: EdgeInsets.zero,

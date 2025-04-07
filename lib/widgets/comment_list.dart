@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sentinova/helper/data.dart';
 import 'package:sentinova/services/apiservice.dart';
 import '../models/comment_model.dart';
 import '../screens/sign_in.dart';
@@ -44,7 +45,8 @@ class _CommentsListState extends State<CommentsList> {
       final post = InheritedPostModel.of(context).postData;
 
       setState(() {
-        ApiService.addComment(post, text);
+        // ApiService.addComment(post, text);
+        post.comments.add(CommentModel(user: currUser!, comment: text, time: DateTime.now()));
       });
 
       _commentController.clear();
